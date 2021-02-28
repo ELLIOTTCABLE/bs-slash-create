@@ -5,3 +5,5 @@ _opam
 .merlin
 
 lib/
+
+bs-slash-create-*.tgz
