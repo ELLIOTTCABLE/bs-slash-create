@@ -54,10 +54,12 @@ module SlashCreator = struct
 
   external commandsPath : t -> string option = "" [@@bs.get]
 
-  external registerCommandsInPath : string -> t = "registerCommandsIn" [@@bs.send.pipe: t]
+  external registerCommandsInPath : string -> t = "" [@@bs.send.pipe: t]
 
-  external registerCommandsIn : requireAllOptions -> t = "registerCommandsIn"
-    [@@bs.send.pipe: t]
+  external registerCommandsIn : requireAllOptions -> t = "" [@@bs.send.pipe: t]
 
-  external syncCommands : ?opts:syncCommandOptions -> unit -> t = "" [@@bs.send.pipe: t]
+  external syncCommandsWith : syncCommandOptions -> t = "syncCommands" [@@bs.send.pipe: t]
+
+  let syncCommands ?deleteCommands ?skipGuildErrors ?syncGuilds creator =
+     syncCommandsWith (syncCommandOptions ?deleteCommands ?skipGuildErrors ?syncGuilds ()) creator
 end

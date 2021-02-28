@@ -12,5 +12,8 @@
    }],
    "package-specs": {
       "module": "es6-global"
+   },
+   "warnings": {
+      "number": "-105-48"
    }
 }
