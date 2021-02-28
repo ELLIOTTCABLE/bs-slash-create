@@ -1,0 +1,14 @@
+{
+  "name": "bs-slash-create",
+  "version": "2.1.0",
+  "description": "slash-create bindings for ReScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bs-platform": "^9.0.1"
+  }
+}

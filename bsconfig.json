@@ -1,0 +1,16 @@
+{
+   "$schema": "https://raw.githubusercontent.com/rescript-lang/rescript-compiler/master/docs/docson/build-schema.json",
+   "name": "bs-slash-create",
+   "sources": [{
+      "dir": "src",
+      "subdirs": true
+   },
+   {
+      "dir": "examples",
+      "type": "dev",
+      "subdirs": true
+   }],
+   "package-specs": {
+      "module": "es6-global"
+   }
+}
