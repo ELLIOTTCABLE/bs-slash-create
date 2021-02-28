@@ -1,6 +1,6 @@
 {
   "name": "bs-slash-create",
-  "version": "2.1.0",
+  "version": "21.0.0-pre.0",
   "description": "ReScript / BuckleScript bindings to the slash-create library for Discord commands",
   "main": "index.js",
   "scripts": {
