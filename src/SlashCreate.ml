@@ -83,21 +83,19 @@ module SlashCommand = struct
     options = ""
     [@@bs.obj]
 
-  type context
+  type context (* TODO: NYI *)
 
-  type message
+  type message (* TODO: NYI *)
 
-  type messageOptions
-
-  type response
+  type messageOptions (* TODO: NYI *)
 
   type permission
-
-  type data
 
   external permissionOfBool : bool -> permission = "%identity"
 
   external permissionWithErrorMessage : string -> permission = "%identity"
+
+  type response
 
   external responseOfString : string -> response = "%identity"
 
@@ -108,10 +106,10 @@ module SlashCommand = struct
 
   type t = {
      commandName : string;
-     (* creator: *) description : string;
+     (* TODO: NYI: creator: *) description : string;
      guildIDs : string array;
-     (* options: *) requiredPermissions : string array;
-     (* throttling: *) unknown : bool;
+     (* TODO: NYI: options: *) requiredPermissions : string array;
+     (* TODO: NYI: throttling: *) unknown : bool;
      mutable filePath : string option;
      mutable hasPermission : context -> permission;
      mutable onBlock : onBlockHandler;
@@ -169,4 +167,102 @@ module SlashCommand = struct
      | "permission", JSONString s -> f @@ `permission s
      | "throttling", JSONObject o -> f @@ `throttling (throttleStatusOfJson o)
      | _ -> failwith ("Unimplemented onBlock reason: " ^ reason)
+end
+
+module CommandContext = struct
+  type channel (* TODO: NYI *)
+
+  type unresolvedMember (* TODO: NYI *)
+
+  type member (* TODO: NYI *)
+
+  type role (* TODO: NYI *)
+
+  type user (* TODO: NYI *)
+
+  type message (* TODO: NYI *)
+
+  type messageOptions (* TODO: NYI *)
+
+  type t = {
+     channelID : string;
+     channels : channel Js.Dict.t;
+     commandID : string;
+     commandName : string;
+     creator : SlashCreator.t;
+     (* TODO: NYI: data: *) expired : bool;
+     guildID : string option;
+     initiallyResponded : bool;
+     interactionID : string;
+     interactionToken : string;
+     invokedAt : float;
+     member : unresolvedMember;
+     members : member Js.Dict.t;
+     options : Js.Json.t;
+     (* TODO: wtf? *)
+     roles : role Js.Dict.t;
+     subcommands : string array;
+     user : user;
+     users : user Js.Dict.t;
+   }
+
+  external acknowledge : t -> ?includeSource:bool -> unit -> bool Js.Promise.t = ""
+    [@@bs.send]
+
+  external delete : t -> ?messageID:string -> unit -> unit Js.Promise.t = "" [@@bs.send]
+
+  type editMessageOptions = {
+     (* TODO: NYI: allowMentions: *)
+     content : string option; (* TODO: NYI: embeds : Js.Json.t array; *)
+   }
+
+  type followUpMessageOptions = {
+     (* TODO: NYI: allowMentions: *)
+     content : string option;
+     (* TODO: NYI: embeds : Js.Json.t array; *)
+     flags : int option;
+     tts : bool option;
+   }
+
+  external edit :
+    t ->
+    messageID:string ->
+    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    message Js.Promise.t = ""
+    [@@bs.send]
+
+  external editOriginal :
+    t ->
+    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    message Js.Promise.t = ""
+    [@@bs.send]
+
+  external _send :
+    t ->
+    ([ `Content of string | `Opts of messageOptions ][@bs.unwrap]) ->
+    Js.Json.t Js.Promise.t = ""
+    [@@bs.send]
+
+  external coerceToMessage : Js.Json.t Js.Dict.t -> message = "%identity"
+
+  let send :
+      t ->
+      [ `Content of string | `Opts of messageOptions ] ->
+      [ `Initial of bool | `Message of message ] Js.Promise.t =
+    fun t x ->
+     let open Js in
+     _send t x
+     |> Promise.then_ (fun rv ->
+            match Json.classify rv with
+            | JSONFalse -> Promise.resolve @@ `Initial false
+            | JSONTrue -> Promise.resolve @@ `Initial true
+            | JSONObject o -> Promise.resolve @@ `Message (coerceToMessage o)
+            | _ -> failwith "unexpected return-value from send()")
+
+
+  external sendFollowUp :
+    t ->
+    ([ `Content of string | `Opts of followUpMessageOptions ][@bs.unwrap]) ->
+    message Js.Promise.t = ""
+    [@@bs.send]
 end
