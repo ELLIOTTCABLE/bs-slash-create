@@ -95,6 +95,9 @@ module SlashCommand = struct
 
   external permissionWithErrorMessage : string -> permission = "%identity"
 
+  type onBlockHandler =
+     context -> string -> Js.Json.t -> message Js.Nullable.t Js.Promise.t option
+
   type t = {
      commandName : string;
      (* creator: *) description : string;
@@ -103,8 +106,8 @@ module SlashCommand = struct
      (* options: *) requiredPermissions : string array;
      (* throttling: *) unknown : bool;
      mutable hasPermission : context -> permission;
-     mutable onBlock :
-       context -> string -> Js.Json.t -> message Js.Nullable.t Js.Promise.t option;
+     mutable onBlock : onBlockHandler;
+     mutable onError : Js.Exn.t -> context -> message Js.Nullable.t Js.Promise.t option;
    }
 
   external createWith : options -> t = "SlashCommand"
@@ -144,22 +147,17 @@ module SlashCommand = struct
      | _ -> failwith failmsg
 
 
-  let handleOnBlock :
-      (context ->
-      [ `permission of string | `throttling of throttleStatus ] ->
-      message Js.Nullable.t Js.Promise.t option) ->
-      t ->
-      unit =
-    fun f self ->
-     let wrapper :
-         context -> string -> Js.Json.t -> message Js.Nullable.t Js.Promise.t option =
-       fun ctx reason data ->
-        let f = f ctx in
-        let open Js in
-        match (reason, Json.classify data) with
-        | "permission", JSONString s -> f @@ `permission s
-        | "throttling", JSONObject o -> f @@ `throttling (throttleStatusOfJson o)
-        | _ -> failwith ("Unimplemented onBlock reason: " ^ reason)
-     in
-     self.onBlock <- wrapper
+  type strictOnBlockHandler =
+     context ->
+     [ `permission of string | `throttling of throttleStatus ] ->
+     message Js.Nullable.t Js.Promise.t option
+
+  let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
+    fun f ctx reason data ->
+     let f = f ctx in
+     let open Js in
+     match (reason, Json.classify data) with
+     | "permission", JSONString s -> f @@ `permission s
+     | "throttling", JSONObject o -> f @@ `throttling (throttleStatusOfJson o)
+     | _ -> failwith ("Unimplemented onBlock reason: " ^ reason)
 end

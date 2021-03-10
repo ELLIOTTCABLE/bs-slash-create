@@ -4,8 +4,8 @@ let default =
       createWith (options ~name:"hello" ~description:"Says hello to you." ())
    in
    command.hasPermission <- (fun _ctx -> permissionOfBool false) ;
-   command |> handleOnBlock (fun ctx -> function
-     | `permission perm -> failwith "nyi"
-     | `throttling arg -> failwith "nyi")
-   |> ignore ;
+   command.onBlock <-
+     wrapOnBlockHandler (fun ctx -> function
+       | `permission perm -> failwith "nyi"
+       | `throttling arg -> failwith "nyi") ;
    command
