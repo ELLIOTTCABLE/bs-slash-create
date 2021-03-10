@@ -87,6 +87,10 @@ module SlashCommand = struct
 
   type message
 
+  type messageOptions
+
+  type response
+
   type permission
 
   type data
@@ -95,19 +99,24 @@ module SlashCommand = struct
 
   external permissionWithErrorMessage : string -> permission = "%identity"
 
+  external responseOfString : string -> response = "%identity"
+
+  external responseOfMsg : messageOptions -> response = "%identity"
+
   type onBlockHandler =
      context -> string -> Js.Json.t -> message Js.Nullable.t Js.Promise.t option
 
   type t = {
      commandName : string;
      (* creator: *) description : string;
-     filePath : string option;
      guildIDs : string array;
      (* options: *) requiredPermissions : string array;
      (* throttling: *) unknown : bool;
+     mutable filePath : string option;
      mutable hasPermission : context -> permission;
      mutable onBlock : onBlockHandler;
-     mutable onError : Js.Exn.t -> context -> message Js.Nullable.t Js.Promise.t option;
+     mutable onError : Js.Exn.t -> context -> message Js.nullable Js.Promise.t option;
+     mutable run : context -> response Js.undefined Js.Promise.t;
    }
 
   external createWith : options -> t = "SlashCommand"
