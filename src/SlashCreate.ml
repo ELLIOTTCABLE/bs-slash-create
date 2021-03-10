@@ -61,5 +61,39 @@ module SlashCreator = struct
   external syncCommandsWith : syncCommandOptions -> t = "syncCommands" [@@bs.send.pipe: t]
 
   let syncCommands ?deleteCommands ?skipGuildErrors ?syncGuilds creator =
-     syncCommandsWith (syncCommandOptions ?deleteCommands ?skipGuildErrors ?syncGuilds ()) creator
+     syncCommandsWith
+       (syncCommandOptions ?deleteCommands ?skipGuildErrors ?syncGuilds ())
+       creator
+end
+
+module SlashCommand = struct
+  type options
+
+  external options :
+    name:string ->
+    description:string ->
+    ?guildIDs:string array ->
+    (* ?options: *)
+    ?requiredPermissions:string array ->
+    (* ?throttling: *)
+    ?unknown:bool ->
+    unit ->
+    options = ""
+    [@@bs.obj]
+
+  type context
+
+  type t =
+     < commandName : string
+     ; (* creator: *) description : string
+     ; filePath : string option
+     ; guildIDs : string array
+     ; (* options: *) requiredPermissions : string array
+     ; (* throttling: *) unknown : bool
+     ; hasPermission : context -> ([`String of string | `Bool of bool][@unwrap]) [@set]
+     >
+     Js.t
+
+  external createWith : options -> t = "SlashCommand"
+    [@@bs.new] [@@bs.module "slash-create"]
 end
