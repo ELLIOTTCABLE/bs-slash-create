@@ -257,12 +257,12 @@ module SlashCommand = struct
   type t = {
      (* Properties *)
      commandName : string;
-     (* TODO: NYI: creator: *)
+     creator : SlashCreator.t;
      description : string;
      guildIDs : string array;
      options : Option.t array;
      requiredPermissions : string array;
-     (* TODO: NYI: throttling: *)
+     throttling : throttlingParams;
      unknown : bool;
      mutable filePath : string Js.undefined;
      (**)
