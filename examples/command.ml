@@ -3,9 +3,15 @@ external __filename : string = "" [@@bs.val]
 let default =
    let open SlashCreate.SlashCommand in
    let command =
-      createWith (options ~name:"hello" ~description:"Says hello to you." ())
+      createWith
+        (params ~name:"hello" ~description:"Says hello to you."
+           ~options:
+             [|
+               opt ~_type:`string ~name:"food" ~description:"What food do you like?" ();
+             |]
+           ())
    in
-   command.filePath <- Some __filename ;
+   command.filePath <- Js.Undefined.return __filename ;
 
    command.hasPermission <- (fun _ctx -> permissionOfBool false) ;
 
@@ -14,8 +20,9 @@ let default =
        | `permission perm -> failwith "nyi"
        | `throttling arg -> failwith "nyi") ;
 
-   command.run <- (fun ctx ->
-      let open Js in
-      Promise.resolve @@ Undefined.return @@ responseOfString "hi") ;
+   command.run <-
+     (fun ctx ->
+       let open Js in
+       Promise.resolve @@ Undefined.return @@ responseOfString "hi") ;
 
    command

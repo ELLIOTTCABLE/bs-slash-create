@@ -1,10 +1,10 @@
 type imageFormat = [ `jpg | `jpeg | `png | `webp | `gif ]
 
-type requireAllOptions
+type requireAllParams
 
 (* FIXME: functional `filter` argument NYI *)
 (* FIXME: type the `resolve` argument *)
-external requireAllOptions :
+external requireAllParams :
   dirname:string ->
   ?excludeDirs:Js.Re.t ->
   ?filter:Js.Re.t ->
@@ -12,25 +12,25 @@ external requireAllOptions :
   ?recursive:bool ->
   ?resolve:(< .. > Js.t -> < .. > Js.t) ->
   unit ->
-  requireAllOptions = ""
+  requireAllParams = ""
   [@@bs.obj]
 
-type syncCommandOptions
+type syncCommandParams
 
-external syncCommandOptions :
+external syncCommandParams :
   ?deleteCommands:bool ->
   ?skipGuildErrors:bool ->
   ?syncGuilds:bool ->
   unit ->
-  syncCommandOptions = ""
+  syncCommandParams = ""
   [@@bs.obj]
 
 module SlashCreator = struct
   type t
 
-  type options
+  type params
 
-  external options :
+  external params :
     applicationID:string ->
     ?publicKey:string ->
     ?token:string ->
@@ -46,48 +46,99 @@ module SlashCreator = struct
     ?requestTimeout:int ->
     ?unknownCommandResponse:bool ->
     unit ->
-    options = ""
+    params = ""
     [@@bs.obj]
 
-  external createWith : options -> t = "SlashCreator"
+  external createWith : params -> t = "SlashCreator"
     [@@bs.new] [@@bs.module "slash-create"]
 
-  external commandsPath : t -> string option = "" [@@bs.get]
+  external commandsPath : t -> string Js.undefined = "" [@@bs.get]
 
   external registerCommandsInPath : string -> t = "" [@@bs.send.pipe: t]
 
-  external registerCommandsIn : requireAllOptions -> t = "" [@@bs.send.pipe: t]
+  external registerCommandsIn : requireAllParams -> t = "" [@@bs.send.pipe: t]
 
-  external syncCommandsWith : syncCommandOptions -> t = "syncCommands" [@@bs.send.pipe: t]
+  external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
 
   let syncCommands ?deleteCommands ?skipGuildErrors ?syncGuilds creator =
      syncCommandsWith
-       (syncCommandOptions ?deleteCommands ?skipGuildErrors ?syncGuilds ())
+       (syncCommandParams ?deleteCommands ?skipGuildErrors ?syncGuilds ())
        creator
 end
 
 module SlashCommand = struct
-  type options
+  module Option = struct
+    type value
 
-  type throttlingOptions = { duration : int; usages : int }
+    external valueOfString : string -> value = "%identity"
 
-  external options :
+    external valueOfFloat : float -> value = "%identity"
+
+    external valueOfInt : int -> value = "%identity"
+
+    type choice = { name : string; value : value }
+
+    type t = {
+       _type :
+         ([ `sub_command
+          | `sub_command_group
+          | `string
+          | `integer
+          | `boolean
+          | `user
+          | `channel ]
+         [@int]);
+           [@as "type"]
+       name : string;
+       description : string;
+       options : t array Js.undefined;
+       choices : choice array Js.undefined;
+       default : bool Js.undefined;
+       required : bool Js.undefined;
+     }
+  end
+
+  external opt :
+    _type:
+      ([ `sub_command
+       | `sub_command_group
+       | `string
+       | `integer
+       | `boolean
+       | `user
+       | `channel ]
+      [@int]) ->
+    name:string ->
+    description:string ->
+    ?options:Option.t array ->
+    ?choices:Option.choice array ->
+    ?default:bool ->
+    ?required:bool ->
+    unit ->
+    Option.t = ""
+    [@@obj]
+
+  type params
+
+  type throttlingParams = { duration : int; usages : int }
+
+  external params :
     name:string ->
     description:string ->
     ?guildIDs:string array ->
-    (* ?options: *)
+    ?options:Option.t array ->
     ?requiredPermissions:string array ->
-    ?throttling:throttlingOptions ->
+    ?throttling:throttlingParams ->
     ?unknown:bool ->
     unit ->
-    options = ""
+    params = ""
     [@@bs.obj]
 
   type context (* TODO: NYI *)
 
   type message (* TODO: NYI *)
 
-  type messageOptions (* TODO: NYI *)
+  type messageParams (* TODO: NYI *)
 
   type permission
 
@@ -99,35 +150,42 @@ module SlashCommand = struct
 
   external responseOfString : string -> response = "%identity"
 
-  external responseOfMsg : messageOptions -> response = "%identity"
+  external responseOfMsg : messageParams -> response = "%identity"
 
   type onBlockHandler =
-     context -> string -> Js.Json.t -> message Js.Nullable.t Js.Promise.t option
+     context -> string -> Js.Json.t -> message Js.nullable Js.Promise.t Js.undefined
 
   type t = {
+     (* Properties *)
      commandName : string;
-     (* TODO: NYI: creator: *) description : string;
+     (* TODO: NYI: creator: *)
+     description : string;
      guildIDs : string array;
-     (* TODO: NYI: options: *) requiredPermissions : string array;
-     (* TODO: NYI: throttling: *) unknown : bool;
-     mutable filePath : string option;
+     options : Option.t array;
+     requiredPermissions : string array;
+     (* TODO: NYI: throttling: *)
+     unknown : bool;
+     mutable filePath : string Js.undefined;
+     (**)
+     (* Handlers *)
      mutable hasPermission : context -> permission;
      mutable onBlock : onBlockHandler;
-     mutable onError : Js.Exn.t -> context -> message Js.nullable Js.Promise.t option;
+     mutable onError :
+       Js.Exn.t -> context -> message Js.nullable Js.Promise.t Js.undefined;
      mutable run : context -> response Js.undefined Js.Promise.t;
    }
 
-  external createWith : options -> t = "SlashCommand"
+  external createWith : params -> t = "SlashCommand"
     [@@bs.new] [@@bs.module "slash-create"]
 
-  type throttleStatus = { throttle : throttlingOptions; remaining : int }
+  type throttleStatus = { throttle : throttlingParams; remaining : int }
 
   let failmsg =
-     "throttleStatusOfJson: argument doesn't match ThrottlingOptions signature"
+     "throttleStatusOfJson: argument doesn't match ThrottlingParams signature"
      [@@bs.inline]
 
 
-  let throttleOptionsOfJson o =
+  let throttleParamsOfJson o =
      let open Js in
      let get = Dict.get o in
      match (get "duration", get "usages") with
@@ -147,7 +205,7 @@ module SlashCommand = struct
          match (Json.classify throttleVal, Json.classify remainingVal) with
          | JSONObject throttleObj, JSONNumber remainingFl ->
              {
-               throttle = throttleOptionsOfJson throttleObj;
+               throttle = throttleParamsOfJson throttleObj;
                remaining = int_of_float remainingFl;
              }
          | _ -> failwith failmsg)
@@ -157,7 +215,7 @@ module SlashCommand = struct
   type strictOnBlockHandler =
      context ->
      [ `permission of string | `throttling of throttleStatus ] ->
-     message Js.Nullable.t Js.Promise.t option
+     message Js.Nullable.t Js.Promise.t Js.undefined
 
   let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
     fun f ctx reason data ->
@@ -191,7 +249,7 @@ module CommandContext = struct
      commandName : string;
      creator : SlashCreator.t;
      (* TODO: NYI: data: *) expired : bool;
-     guildID : string option;
+     guildID : string Js.undefined;
      initiallyResponded : bool;
      interactionID : string;
      interactionToken : string;
