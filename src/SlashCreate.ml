@@ -66,167 +66,6 @@ module SlashCreator = struct
        creator
 end
 
-module SlashCommand = struct
-  module Option = struct
-    type value
-
-    external valueOfString : string -> value = "%identity"
-
-    external valueOfFloat : float -> value = "%identity"
-
-    external valueOfInt : int -> value = "%identity"
-
-    type choice = { name : string; value : value }
-
-    type t = {
-       _type :
-         ([ `sub_command
-          | `sub_command_group
-          | `string
-          | `integer
-          | `boolean
-          | `user
-          | `channel ]
-         [@int]);
-           [@as "type"]
-       name : string;
-       description : string;
-       options : t array Js.undefined;
-       choices : choice array Js.undefined;
-       default : bool Js.undefined;
-       required : bool Js.undefined;
-     }
-  end
-
-  external opt :
-    _type:
-      ([ `sub_command
-       | `sub_command_group
-       | `string
-       | `integer
-       | `boolean
-       | `user
-       | `channel ]
-      [@int]) ->
-    name:string ->
-    description:string ->
-    ?options:Option.t array ->
-    ?choices:Option.choice array ->
-    ?default:bool ->
-    ?required:bool ->
-    unit ->
-    Option.t = ""
-    [@@obj]
-
-  type params
-
-  type throttlingParams = { duration : int; usages : int }
-
-  external params :
-    name:string ->
-    description:string ->
-    ?guildIDs:string array ->
-    ?options:Option.t array ->
-    ?requiredPermissions:string array ->
-    ?throttling:throttlingParams ->
-    ?unknown:bool ->
-    unit ->
-    params = ""
-    [@@bs.obj]
-
-  type context (* TODO: NYI *)
-
-  type message (* TODO: NYI *)
-
-  type messageParams (* TODO: NYI *)
-
-  type permission
-
-  external permissionOfBool : bool -> permission = "%identity"
-
-  external permissionWithErrorMessage : string -> permission = "%identity"
-
-  type response
-
-  external responseOfString : string -> response = "%identity"
-
-  external responseOfMsg : messageParams -> response = "%identity"
-
-  type onBlockHandler =
-     context -> string -> Js.Json.t -> message Js.nullable Js.Promise.t Js.undefined
-
-  type t = {
-     (* Properties *)
-     commandName : string;
-     (* TODO: NYI: creator: *)
-     description : string;
-     guildIDs : string array;
-     options : Option.t array;
-     requiredPermissions : string array;
-     (* TODO: NYI: throttling: *)
-     unknown : bool;
-     mutable filePath : string Js.undefined;
-     (**)
-     (* Handlers *)
-     mutable hasPermission : context -> permission;
-     mutable onBlock : onBlockHandler;
-     mutable onError :
-       Js.Exn.t -> context -> message Js.nullable Js.Promise.t Js.undefined;
-     mutable run : context -> response Js.undefined Js.Promise.t;
-   }
-
-  external createWith : params -> t = "SlashCommand"
-    [@@bs.new] [@@bs.module "slash-create"]
-
-  type throttleStatus = { throttle : throttlingParams; remaining : int }
-
-  let failmsg =
-     "throttleStatusOfJson: argument doesn't match ThrottlingParams signature"
-     [@@bs.inline]
-
-
-  let throttleParamsOfJson o =
-     let open Js in
-     let get = Dict.get o in
-     match (get "duration", get "usages") with
-     | Some durationVal, Some usagesVal -> (
-         match (Json.classify durationVal, Json.classify usagesVal) with
-         | JSONNumber durationFl, JSONNumber usagesFl ->
-             { duration = int_of_float durationFl; usages = int_of_float usagesFl }
-         | _ -> failwith failmsg)
-     | _ -> failwith failmsg
-
-
-  let throttleStatusOfJson o =
-     let open Js in
-     let get = Dict.get o in
-     match (get "throttle", get "remaining") with
-     | Some throttleVal, Some remainingVal -> (
-         match (Json.classify throttleVal, Json.classify remainingVal) with
-         | JSONObject throttleObj, JSONNumber remainingFl ->
-             {
-               throttle = throttleParamsOfJson throttleObj;
-               remaining = int_of_float remainingFl;
-             }
-         | _ -> failwith failmsg)
-     | _ -> failwith failmsg
-
-
-  type strictOnBlockHandler =
-     context ->
-     [ `permission of string | `throttling of throttleStatus ] ->
-     message Js.Nullable.t Js.Promise.t Js.undefined
-
-  let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
-    fun f ctx reason data ->
-     let f = f ctx in
-     let open Js in
-     match (reason, Json.classify data) with
-     | "permission", JSONString s -> f @@ `permission s
-     | "throttling", JSONObject o -> f @@ `throttling (throttleStatusOfJson o)
-     | _ -> failwith ("Unimplemented onBlock reason: " ^ reason)
-end
-
 module CommandContext = struct
   type channel (* TODO: NYI *)
 
@@ -323,4 +162,166 @@ module CommandContext = struct
     ([ `Content of string | `Opts of followUpMessageOptions ][@bs.unwrap]) ->
     message Js.Promise.t = ""
     [@@bs.send]
+end
+
+module SlashCommand = struct
+  module Option = struct
+    type value
+
+    external valueOfString : string -> value = "%identity"
+
+    external valueOfFloat : float -> value = "%identity"
+
+    external valueOfInt : int -> value = "%identity"
+
+    type choice = { name : string; value : value }
+
+    type t = {
+       _type :
+         ([ `sub_command
+          | `sub_command_group
+          | `string
+          | `integer
+          | `boolean
+          | `user
+          | `channel ]
+         [@int]);
+           [@as "type"]
+       name : string;
+       description : string;
+       options : t array Js.undefined;
+       choices : choice array Js.undefined;
+       default : bool Js.undefined;
+       required : bool Js.undefined;
+     }
+  end
+
+  external opt :
+    _type:
+      ([ `sub_command
+       | `sub_command_group
+       | `string
+       | `integer
+       | `boolean
+       | `user
+       | `channel ]
+      [@int]) ->
+    name:string ->
+    description:string ->
+    ?options:Option.t array ->
+    ?choices:Option.choice array ->
+    ?default:bool ->
+    ?required:bool ->
+    unit ->
+    Option.t = ""
+    [@@obj]
+
+  type params
+
+  type throttlingParams = { duration : int; usages : int }
+
+  external params :
+    name:string ->
+    description:string ->
+    ?guildIDs:string array ->
+    ?options:Option.t array ->
+    ?requiredPermissions:string array ->
+    ?throttling:throttlingParams ->
+    ?unknown:bool ->
+    unit ->
+    params = ""
+    [@@bs.obj]
+
+  type message (* TODO: NYI *)
+
+  type messageParams (* TODO: NYI *)
+
+  type permission
+
+  external permissionOfBool : bool -> permission = "%identity"
+
+  external permissionWithErrorMessage : string -> permission = "%identity"
+
+  type response
+
+  external responseOfString : string -> response = "%identity"
+
+  external responseOfMsg : messageParams -> response = "%identity"
+
+  type onBlockHandler =
+     CommandContext.t ->
+     string ->
+     Js.Json.t ->
+     message Js.nullable Js.Promise.t Js.undefined
+
+  type t = {
+     (* Properties *)
+     commandName : string;
+     (* TODO: NYI: creator: *)
+     description : string;
+     guildIDs : string array;
+     options : Option.t array;
+     requiredPermissions : string array;
+     (* TODO: NYI: throttling: *)
+     unknown : bool;
+     mutable filePath : string Js.undefined;
+     (**)
+     (* Handlers *)
+     mutable hasPermission : CommandContext.t -> permission;
+     mutable onBlock : onBlockHandler;
+     mutable onError :
+       Js.Exn.t -> CommandContext.t -> message Js.nullable Js.Promise.t Js.undefined;
+     mutable run : CommandContext.t -> response Js.undefined Js.Promise.t;
+   }
+
+  external createWith : params -> t = "SlashCommand"
+    [@@bs.new] [@@bs.module "slash-create"]
+
+  type throttleStatus = { throttle : throttlingParams; remaining : int }
+
+  let failmsg =
+     "throttleStatusOfJson: argument doesn't match ThrottlingParams signature"
+     [@@bs.inline]
+
+
+  let throttleParamsOfJson o =
+     let open Js in
+     let get = Dict.get o in
+     match (get "duration", get "usages") with
+     | Some durationVal, Some usagesVal -> (
+         match (Json.classify durationVal, Json.classify usagesVal) with
+         | JSONNumber durationFl, JSONNumber usagesFl ->
+             { duration = int_of_float durationFl; usages = int_of_float usagesFl }
+         | _ -> failwith failmsg)
+     | _ -> failwith failmsg
+
+
+  let throttleStatusOfJson o =
+     let open Js in
+     let get = Dict.get o in
+     match (get "throttle", get "remaining") with
+     | Some throttleVal, Some remainingVal -> (
+         match (Json.classify throttleVal, Json.classify remainingVal) with
+         | JSONObject throttleObj, JSONNumber remainingFl ->
+             {
+               throttle = throttleParamsOfJson throttleObj;
+               remaining = int_of_float remainingFl;
+             }
+         | _ -> failwith failmsg)
+     | _ -> failwith failmsg
+
+
+  type strictOnBlockHandler =
+     CommandContext.t ->
+     [ `permission of string | `throttling of throttleStatus ] ->
+     message Js.Nullable.t Js.Promise.t Js.undefined
+
+  let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
+    fun f ctx reason data ->
+     let f = f ctx in
+     let open Js in
+     match (reason, Json.classify data) with
+     | "permission", JSONString s -> f @@ `permission s
+     | "throttling", JSONObject o -> f @@ `throttling (throttleStatusOfJson o)
+     | _ -> failwith ("Unimplemented onBlock reason: " ^ reason)
 end
