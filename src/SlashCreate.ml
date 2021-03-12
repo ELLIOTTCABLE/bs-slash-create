@@ -66,12 +66,27 @@ module SlashCreator = struct
        creator
 end
 
+module User = struct
+  type t = {
+     avatar : string Js.undefined;
+     avatarURL : string;
+     bot : bool;
+     defaultAvatar : float;
+     defaultAvatarURL : string;
+     discriminator : string;
+     (* TODO: NYI: flags: *)
+     id : string;
+     mention : string;
+     username : string;
+   }
+
+  external dynamicAvatarURL : ?format:imageFormat -> ?size:int -> string = ""
+    [@@bs.send.pipe: t]
+end
+
 module Message = struct
   (* TODO: NYI *)
   type attachment
-
-  (* TODO: NYI *)
-  type user
 
   type allowance
 
@@ -111,7 +126,7 @@ module Message = struct
 
   type t = private {
      attachments : attachment array;
-     author : user;
+     author : User.t;
      channelID : string;
      content : string;
      editedTimestamp : float Js.undefined;
@@ -135,9 +150,8 @@ module Message = struct
   external delete : t -> unknown Js.Promise.t = "" [@@bs.send]
 
   external edit :
-    t ->
-    ([ `Content of string | `Params of editParams ][@bs.unwrap]) ->
-    t Js.Promise.t = ""
+    t -> ([ `Content of string | `Params of editParams ][@bs.unwrap]) -> t Js.Promise.t
+    = ""
     [@@bs.send]
 end
 
@@ -149,8 +163,6 @@ module CommandContext = struct
   type member (* TODO: NYI *)
 
   type role (* TODO: NYI *)
-
-  type user (* TODO: NYI *)
 
   type t = {
      channelID : string;
@@ -170,8 +182,8 @@ module CommandContext = struct
      (* TODO: wtf? *)
      roles : role Js.Dict.t;
      subcommands : string array;
-     user : user;
-     users : user Js.Dict.t;
+     user : User.t;
+     users : User.t Js.Dict.t;
    }
 
   external acknowledge : t -> ?includeSource:bool -> unit -> bool Js.Promise.t = ""
