@@ -78,13 +78,13 @@ type messageAllowedMentions = {
    users : allowance Js.undefined;
  }
 
-type editMessageOptions = {
+type editMessageParams = {
    content : string Js.undefined;
    embeds : Js.Json.t array Js.undefined;
    allowMentions : messageAllowedMentions;
  }
 
-type followUpMessageOptions = {
+type followUpMessageParams = {
    content : string Js.undefined;
    embeds : Js.Json.t array Js.undefined;
    allowMentions : messageAllowedMentions;
@@ -92,7 +92,7 @@ type followUpMessageOptions = {
    tts : bool Js.undefined;
  }
 
-type messageOptions = {
+type messageParams = {
    content : string Js.undefined;
    embeds : Js.Json.t array Js.undefined;
    allowMentions : messageAllowedMentions;
@@ -114,7 +114,7 @@ module Message = struct
      author : user;
      channelID : string;
      content : string;
-     editedTimestamp : float option;
+     editedTimestamp : float Js.undefined;
      (**)
      (* TODO: is this JSON? *)
      embeds : Js.Json.t array;
@@ -136,7 +136,7 @@ module Message = struct
 
   external edit :
     t ->
-    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
     t Js.Promise.t = ""
     [@@bs.send]
 end
@@ -151,8 +151,6 @@ module CommandContext = struct
   type role (* TODO: NYI *)
 
   type user (* TODO: NYI *)
-
-  type messageOptions (* TODO: NYI *)
 
   type t = {
      channelID : string;
@@ -184,19 +182,19 @@ module CommandContext = struct
   external edit :
     t ->
     messageID:string ->
-    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external editOriginal :
     t ->
-    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external _send :
     t ->
-    ([ `Content of string | `Opts of messageOptions ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of messageParams ][@bs.unwrap]) ->
     Js.Json.t Js.Promise.t = ""
     [@@bs.send]
 
@@ -204,7 +202,7 @@ module CommandContext = struct
 
   let send :
       t ->
-      [ `Content of string | `Opts of messageOptions ] ->
+      [ `Content of string | `Params of messageParams ] ->
       [ `Initial of bool | `Message of Message.t ] Js.Promise.t =
     fun t x ->
      let open Js in
@@ -219,7 +217,7 @@ module CommandContext = struct
 
   external sendFollowUp :
     t ->
-    ([ `Content of string | `Opts of followUpMessageOptions ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of followUpMessageParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 end
