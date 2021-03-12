@@ -66,26 +66,40 @@ module SlashCreator = struct
        creator
 end
 
-type messageOptions = {
-   (* TODO: NYI: allowMentions: *)
-   content : string Js.undefined;
-   (* TODO: NYI: embeds : Js.Json.t array; *)
-   ephemeral : bool Js.undefined;
-   flags : int Js.undefined;
-   tts : bool Js.undefined;
+type allowance
+
+external blanketAllowance : bool -> allowance = "%identity"
+
+external specificAllowance : string array -> allowance = "%identity"
+
+type messageAllowedMentions = {
+   everyone : bool;
+   roles : allowance Js.undefined;
+   users : allowance Js.undefined;
  }
 
 type editMessageOptions = {
-   (* TODO: NYI: allowMentions: *)
-   content : string Js.undefined; (* TODO: NYI: embeds : Js.Json.t array; *)
+   content : string Js.undefined;
+   embeds : Js.Json.t array Js.undefined;
+   allowMentions : messageAllowedMentions;
  }
 
 type followUpMessageOptions = {
-   (* TODO: NYI: allowMentions: *)
    content : string Js.undefined;
-   (* TODO: NYI: embeds : Js.Json.t array; *)
+   embeds : Js.Json.t array Js.undefined;
+   allowMentions : messageAllowedMentions;
    flags : int Js.undefined;
    tts : bool Js.undefined;
+ }
+
+type messageOptions = {
+   content : string Js.undefined;
+   embeds : Js.Json.t array Js.undefined;
+   allowMentions : messageAllowedMentions;
+   flags : int Js.undefined;
+   tts : bool Js.undefined;
+   ephemeral : bool Js.undefined;
+   includeSource : bool Js.undefined;
  }
 
 module Message = struct
