@@ -1,4 +1,4 @@
-external __filename : string = "" [@@bs.val]
+external __filename : string = "__filename" [@@bs.val]
 
 let default =
    let open SlashCreate.SlashCommand in

@@ -66,6 +66,67 @@ module SlashCreator = struct
        creator
 end
 
+type messageOptions = {
+   (* TODO: NYI: allowMentions: *)
+   content : string Js.undefined;
+   (* TODO: NYI: embeds : Js.Json.t array; *)
+   ephemeral : bool Js.undefined;
+   flags : int Js.undefined;
+   tts : bool Js.undefined;
+ }
+
+type editMessageOptions = {
+   (* TODO: NYI: allowMentions: *)
+   content : string Js.undefined; (* TODO: NYI: embeds : Js.Json.t array; *)
+ }
+
+type followUpMessageOptions = {
+   (* TODO: NYI: allowMentions: *)
+   content : string Js.undefined;
+   (* TODO: NYI: embeds : Js.Json.t array; *)
+   flags : int Js.undefined;
+   tts : bool Js.undefined;
+ }
+
+module Message = struct
+  (* TODO: NYI *)
+  type attachment
+
+  (* TODO: NYI *)
+  type user
+
+  type t = private {
+     attachments : attachment array;
+     author : user;
+     channelID : string;
+     content : string;
+     editedTimestamp : float option;
+     (**)
+     (* TODO: is this JSON? *)
+     embeds : Js.Json.t array;
+     flags : int;
+     id : string;
+     mentionedEveryone : bool;
+     mentions : string array;
+     roleMentions : string array;
+     timestamp : float;
+     tts : bool;
+     _type : int;
+     webhookID : string;
+   }
+
+  (* FIXME: typeme *)
+  type unknown
+
+  external delete : t -> unknown Js.Promise.t = "" [@@bs.send]
+
+  external edit :
+    t ->
+    ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
+    t Js.Promise.t = ""
+    [@@bs.send]
+end
+
 module CommandContext = struct
   type channel (* TODO: NYI *)
 
@@ -76,8 +137,6 @@ module CommandContext = struct
   type role (* TODO: NYI *)
 
   type user (* TODO: NYI *)
-
-  type message (* TODO: NYI *)
 
   type messageOptions (* TODO: NYI *)
 
@@ -108,30 +167,17 @@ module CommandContext = struct
 
   external delete : t -> ?messageID:string -> unit -> unit Js.Promise.t = "" [@@bs.send]
 
-  type editMessageOptions = {
-     (* TODO: NYI: allowMentions: *)
-     content : string option; (* TODO: NYI: embeds : Js.Json.t array; *)
-   }
-
-  type followUpMessageOptions = {
-     (* TODO: NYI: allowMentions: *)
-     content : string option;
-     (* TODO: NYI: embeds : Js.Json.t array; *)
-     flags : int option;
-     tts : bool option;
-   }
-
   external edit :
     t ->
     messageID:string ->
     ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
-    message Js.Promise.t = ""
+    Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external editOriginal :
     t ->
     ([ `Content of string | `Opts of editMessageOptions ][@bs.unwrap]) ->
-    message Js.Promise.t = ""
+    Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external _send :
@@ -140,12 +186,12 @@ module CommandContext = struct
     Js.Json.t Js.Promise.t = ""
     [@@bs.send]
 
-  external coerceToMessage : Js.Json.t Js.Dict.t -> message = "%identity"
+  external assertIsMessage : Js.Json.t Js.Dict.t -> Message.t = "%identity"
 
   let send :
       t ->
       [ `Content of string | `Opts of messageOptions ] ->
-      [ `Initial of bool | `Message of message ] Js.Promise.t =
+      [ `Initial of bool | `Message of Message.t ] Js.Promise.t =
     fun t x ->
      let open Js in
      _send t x
@@ -153,14 +199,14 @@ module CommandContext = struct
             match Json.classify rv with
             | JSONFalse -> Promise.resolve @@ `Initial false
             | JSONTrue -> Promise.resolve @@ `Initial true
-            | JSONObject o -> Promise.resolve @@ `Message (coerceToMessage o)
+            | JSONObject o -> Promise.resolve @@ `Message (assertIsMessage o)
             | _ -> failwith "unexpected return-value from send()")
 
 
   external sendFollowUp :
     t ->
     ([ `Content of string | `Opts of followUpMessageOptions ][@bs.unwrap]) ->
-    message Js.Promise.t = ""
+    Message.t Js.Promise.t = ""
     [@@bs.send]
 end
 
