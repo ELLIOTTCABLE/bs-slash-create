@@ -66,48 +66,48 @@ module SlashCreator = struct
        creator
 end
 
-type allowance
-
-external blanketAllowance : bool -> allowance = "%identity"
-
-external specificAllowance : string array -> allowance = "%identity"
-
-type messageAllowedMentions = {
-   everyone : bool;
-   roles : allowance Js.undefined;
-   users : allowance Js.undefined;
- }
-
-type editMessageParams = {
-   content : string Js.undefined;
-   embeds : Js.Json.t array Js.undefined;
-   allowMentions : messageAllowedMentions;
- }
-
-type followUpMessageParams = {
-   content : string Js.undefined;
-   embeds : Js.Json.t array Js.undefined;
-   allowMentions : messageAllowedMentions;
-   flags : int Js.undefined;
-   tts : bool Js.undefined;
- }
-
-type messageParams = {
-   content : string Js.undefined;
-   embeds : Js.Json.t array Js.undefined;
-   allowMentions : messageAllowedMentions;
-   flags : int Js.undefined;
-   tts : bool Js.undefined;
-   ephemeral : bool Js.undefined;
-   includeSource : bool Js.undefined;
- }
-
 module Message = struct
   (* TODO: NYI *)
   type attachment
 
   (* TODO: NYI *)
   type user
+
+  type allowance
+
+  external blanketAllowance : bool -> allowance = "%identity"
+
+  external specificAllowance : string array -> allowance = "%identity"
+
+  type allowedMentions = {
+     everyone : bool;
+     roles : allowance Js.undefined;
+     users : allowance Js.undefined;
+   }
+
+  type editParams = {
+     content : string Js.undefined;
+     embeds : Js.Json.t array Js.undefined;
+     allowMentions : allowedMentions;
+   }
+
+  type followUpParams = {
+     content : string Js.undefined;
+     embeds : Js.Json.t array Js.undefined;
+     allowMentions : allowedMentions;
+     flags : int Js.undefined;
+     tts : bool Js.undefined;
+   }
+
+  type params = {
+     content : string Js.undefined;
+     embeds : Js.Json.t array Js.undefined;
+     allowMentions : allowedMentions;
+     flags : int Js.undefined;
+     tts : bool Js.undefined;
+     ephemeral : bool Js.undefined;
+     includeSource : bool Js.undefined;
+   }
 
   type t = private {
      attachments : attachment array;
@@ -136,7 +136,7 @@ module Message = struct
 
   external edit :
     t ->
-    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of editParams ][@bs.unwrap]) ->
     t Js.Promise.t = ""
     [@@bs.send]
 end
@@ -182,19 +182,19 @@ module CommandContext = struct
   external edit :
     t ->
     messageID:string ->
-    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of Message.editParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external editOriginal :
     t ->
-    ([ `Content of string | `Params of editMessageParams ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of Message.editParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 
   external _send :
     t ->
-    ([ `Content of string | `Params of messageParams ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of Message.params ][@bs.unwrap]) ->
     Js.Json.t Js.Promise.t = ""
     [@@bs.send]
 
@@ -202,7 +202,7 @@ module CommandContext = struct
 
   let send :
       t ->
-      [ `Content of string | `Params of messageParams ] ->
+      [ `Content of string | `Params of Message.params ] ->
       [ `Initial of bool | `Message of Message.t ] Js.Promise.t =
     fun t x ->
      let open Js in
@@ -217,7 +217,7 @@ module CommandContext = struct
 
   external sendFollowUp :
     t ->
-    ([ `Content of string | `Params of followUpMessageParams ][@bs.unwrap]) ->
+    ([ `Content of string | `Params of Message.followUpParams ][@bs.unwrap]) ->
     Message.t Js.Promise.t = ""
     [@@bs.send]
 end
@@ -290,10 +290,6 @@ module SlashCommand = struct
     params = ""
     [@@bs.obj]
 
-  type message (* TODO: NYI *)
-
-  type messageParams (* TODO: NYI *)
-
   type permission
 
   external permissionOfBool : bool -> permission = "%identity"
@@ -304,13 +300,13 @@ module SlashCommand = struct
 
   external responseOfString : string -> response = "%identity"
 
-  external responseOfMsg : messageParams -> response = "%identity"
+  external responseOfMsg : Message.params -> response = "%identity"
 
   type onBlockHandler =
      CommandContext.t ->
      string ->
      Js.Json.t ->
-     message Js.nullable Js.Promise.t Js.undefined
+     Message.t Js.nullable Js.Promise.t Js.undefined
 
   type t = {
      (* Properties *)
@@ -328,7 +324,7 @@ module SlashCommand = struct
      mutable hasPermission : CommandContext.t -> permission;
      mutable onBlock : onBlockHandler;
      mutable onError :
-       Js.Exn.t -> CommandContext.t -> message Js.nullable Js.Promise.t Js.undefined;
+       Js.Exn.t -> CommandContext.t -> Message.t Js.nullable Js.Promise.t Js.undefined;
      mutable run : CommandContext.t -> response Js.undefined Js.Promise.t;
    }
 
@@ -372,7 +368,7 @@ module SlashCommand = struct
   type strictOnBlockHandler =
      CommandContext.t ->
      [ `permission of string | `throttling of throttleStatus ] ->
-     message Js.Nullable.t Js.Promise.t Js.undefined
+     Message.t Js.Nullable.t Js.Promise.t Js.undefined
 
   let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
     fun f ctx reason data ->
