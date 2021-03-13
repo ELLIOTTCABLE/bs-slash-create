@@ -84,6 +84,26 @@ module User = struct
     [@@bs.send.pipe: t]
 end
 
+module Member = struct
+  (* FIXME: This is private, I think? *)
+  type unresolved
+
+  type t = {
+     deaf : bool;
+     displayName : string;
+     id : string;
+     joinedAt : float;
+     mention : string;
+     mute : bool;
+     nick : string option;
+     pending : bool;
+     (* TODO: NYI: permissions: *)
+     premiumSince : float option;
+     roles : string array;
+     user : User.t;
+   }
+end
+
 module Message = struct
   (* TODO: NYI *)
   type attachment
@@ -158,10 +178,6 @@ end
 module CommandContext = struct
   type channel (* TODO: NYI *)
 
-  type unresolvedMember (* TODO: NYI *)
-
-  type member (* TODO: NYI *)
-
   type role (* TODO: NYI *)
 
   type t = {
@@ -176,8 +192,8 @@ module CommandContext = struct
      interactionID : string;
      interactionToken : string;
      invokedAt : float;
-     member : unresolvedMember;
-     members : member Js.Dict.t;
+     member : Member.unresolved;
+     members : Member.t Js.Dict.t;
      options : Js.Json.t;
      (* TODO: wtf? *)
      roles : role Js.Dict.t;
