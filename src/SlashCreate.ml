@@ -66,6 +66,104 @@ module SlashCreator = struct
        creator
 end
 
+module BitField = struct
+  type t = { bitfield : int }
+end
+
+module UserFlags = struct
+  type t
+
+  let dISCORD_EMPLOYEE = 1
+
+  let pARTNERED_SERVER_OWNER = 1 lsl 1
+
+  let hYPESQUAD_EVENTS = 1 lsl 2
+
+  let bUG_HUNTER_LEVEL_1 = 1 lsl 3
+
+  let hOUSE_BRAVERY = 1 lsl 6
+
+  let hOUSE_BRILLIANCE = 1 lsl 7
+
+  let hOUSE_BALANCE = 1 lsl 8
+
+  let eARLY_SUPPORTER = 1 lsl 9
+
+  let tEAM_USER = 1 lsl 10
+
+  let sYSTEM = 1 lsl 12
+
+  let bUG_HUNTER_LEVEL_2 = 1 lsl 14
+
+  let vERIFIED_BOT = 1 lsl 16
+
+  let eARLY_VERIFIED_BOT_DEVELOPER = 1 lsl 17
+end
+
+module Permissions = struct
+  let cREATE_INSTANT_INVITE = 1 lsl 0
+
+  let kICK_MEMBERS = 1 lsl 1
+
+  let bAN_MEMBERS = 1 lsl 2
+
+  let aDMINISTRATOR = 1 lsl 3
+
+  let mANAGE_CHANNELS = 1 lsl 4
+
+  let mANAGE_GUILD = 1 lsl 5
+
+  let aDD_REACTIONS = 1 lsl 6
+
+  let vIEW_AUDIT_LOG = 1 lsl 7
+
+  let pRIORITY_SPEAKER = 1 lsl 8
+
+  let sTREAM = 1 lsl 9
+
+  let vIEW_CHANNEL = 1 lsl 10
+
+  let sEND_MESSAGES = 1 lsl 11
+
+  let sEND_TTS_MESSAGES = 1 lsl 12
+
+  let mANAGE_MESSAGES = 1 lsl 13
+
+  let eMBED_LINKS = 1 lsl 14
+
+  let aTTACH_FILES = 1 lsl 15
+
+  let rEAD_MESSAGE_HISTORY = 1 lsl 16
+
+  let mENTION_EVERYONE = 1 lsl 17
+
+  let uSE_EXTERNAL_EMOJIS = 1 lsl 18
+
+  let vIEW_GUILD_INSIGHTS = 1 lsl 19
+
+  let cONNECT = 1 lsl 20
+
+  let sPEAK = 1 lsl 21
+
+  let mUTE_MEMBERS = 1 lsl 22
+
+  let dEAFEN_MEMBERS = 1 lsl 23
+
+  let mOVE_MEMBERS = 1 lsl 24
+
+  let uSE_VAD = 1 lsl 25
+
+  let cHANGE_NICKNAME = 1 lsl 26
+
+  let mANAGE_NICKNAMES = 1 lsl 27
+
+  let mANAGE_ROLES = 1 lsl 28
+
+  let mANAGE_WEBHOOKS = 1 lsl 29
+
+  let mANAGE_EMOJIS = 1 lsl 30
+end
+
 module User = struct
   type t = {
      avatar : string Js.undefined;
@@ -74,7 +172,7 @@ module User = struct
      defaultAvatar : float;
      defaultAvatarURL : string;
      discriminator : string;
-     (* TODO: NYI: flags: *)
+     flags : BitField.t;
      id : string;
      mention : string;
      username : string;
@@ -97,7 +195,7 @@ module Member = struct
      mute : bool;
      nick : string option;
      pending : bool;
-     (* TODO: NYI: permissions: *)
+     permissions : BitField.t;
      premiumSince : float option;
      roles : string array;
      user : User.t;
