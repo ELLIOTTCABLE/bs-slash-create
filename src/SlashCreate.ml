@@ -428,11 +428,7 @@ module SlashCommand = struct
 
   external responseOfMsg : Message.params -> response = "%identity"
 
-  type onBlockHandler =
-     CommandContext.t ->
-     string ->
-     Js.Json.t ->
-     Message.t Js.nullable Js.Promise.t Js.undefined
+  type onBlockHandler = CommandContext.t -> string -> Js.Json.t -> unit
 
   type t = {
      (* Properties *)
@@ -449,8 +445,7 @@ module SlashCommand = struct
      (* Handlers *)
      mutable hasPermission : CommandContext.t -> permission;
      mutable onBlock : onBlockHandler;
-     mutable onError :
-       Js.Exn.t -> CommandContext.t -> Message.t Js.nullable Js.Promise.t Js.undefined;
+     mutable onError : Js.Exn.t -> CommandContext.t -> unit;
      mutable run : CommandContext.t -> response Js.undefined Js.Promise.t;
    }
 
@@ -492,9 +487,7 @@ module SlashCommand = struct
 
 
   type strictOnBlockHandler =
-     CommandContext.t ->
-     [ `permission of string | `throttling of throttleStatus ] ->
-     Message.t Js.Nullable.t Js.Promise.t Js.undefined
+     CommandContext.t -> [ `permission of string | `throttling of throttleStatus ] -> unit
 
   let wrapOnBlockHandler : strictOnBlockHandler -> onBlockHandler =
     fun f ctx reason data ->
