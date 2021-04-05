@@ -165,7 +165,7 @@ module Permissions = struct
 end
 
 module User = struct
-  type t = {
+  type t = private {
      avatar : string Js.undefined;
      avatarURL : string;
      bot : bool;
@@ -186,7 +186,7 @@ module Member = struct
   (* FIXME: This is private, I think? *)
   type unresolved
 
-  type t = {
+  type t = private {
      deaf : bool;
      displayName : string;
      id : string;
@@ -278,7 +278,7 @@ module CommandContext = struct
 
   type role (* TODO: NYI *)
 
-  type t = {
+  type t = private {
      channelID : string;
      channels : channel Js.Dict.t;
      commandID : string;
@@ -430,7 +430,7 @@ module SlashCommand = struct
 
   type onBlockHandler = CommandContext.t -> string -> Js.Json.t -> unit
 
-  type t = {
+  type t = private {
      (* Properties *)
      commandName : string;
      creator : SlashCreator.t;
