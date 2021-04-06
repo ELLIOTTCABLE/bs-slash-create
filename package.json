@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "bs-platform": "^9.0.1"
+    "bs-platform": "^9.0.1",
+    "bsdoc": "^6.0.4-alpha"
   }
 }
