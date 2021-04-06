@@ -19,8 +19,8 @@ type syncCommandParams
 
 external syncCommandParams :
   ?deleteCommands:bool ->
-  ?skipGuildErrors:bool ->
   ?syncGuilds:bool ->
+  ?skipGuildErrors:bool ->
   unit ->
   syncCommandParams = ""
   [@@bs.obj]
@@ -34,17 +34,19 @@ module SlashCreator = struct
     applicationID:string ->
     ?publicKey:string ->
     ?token:string ->
+    ?endpointPath:string ->
     ?serverHost:string ->
     ?serverPort:int ->
-    ?endpointPath:string ->
+    ?unknownCommandResponse:bool ->
     ?autoAcknowledgeSource:bool ->
+    (* FIXME: NYI ?allowedMentions:??? -> *)
     ?defaultImageFormat:imageFormat ->
     ?defaultImageSize:int ->
     ?latencyThreshold:int ->
-    ?maxSignatureTimestamp:int ->
     ?ratelimiterOffset:int ->
     ?requestTimeout:int ->
-    ?unknownCommandResponse:bool ->
+    ?maxSignatureTimestamp:int ->
+    (* FIXME: NYI ?agent:??? -> *)
     unit ->
     params = ""
     [@@bs.obj]
@@ -168,16 +170,17 @@ end
 
 module User = struct
   type t = private {
+     id : string;
+     username : string;
+     discriminator : string;
      avatar : string Js.undefined;
-     avatarURL : string;
      bot : bool;
+     (* *)
+     flags : UserFlags.t;
+     mention : string;
      defaultAvatar : float;
      defaultAvatarURL : string;
-     discriminator : string;
-     flags : BitField.t;
-     id : string;
-     mention : string;
-     username : string;
+     avatarURL : string;
    }
 
   external dynamicAvatarURL : ?format:imageFormat -> ?size:int -> string = ""
@@ -189,18 +192,21 @@ module Member = struct
   type unresolved
 
   type t = private {
-     deaf : bool;
-     displayName : string;
      id : string;
-     joinedAt : float;
-     mention : string;
-     mute : bool;
      nick : string option;
-     pending : bool;
-     permissions : BitField.t;
-     premiumSince : float option;
+     joinedAt : float;
      roles : string array;
+     premiumSince : float option;
+     pending : bool;
      user : User.t;
+     (* *)
+     mention : string;
+     displayName : string;
+     (* *)
+     mute : bool;
+     deaf : bool;
+     (* *)
+     permissions : Permissions.t;
    }
 end
 
@@ -245,22 +251,21 @@ module Message = struct
    }
 
   type t = private {
-     attachments : attachment array;
-     author : User.t;
-     channelID : string;
+     id : string;
+     _type : int;
      content : string;
-     editedTimestamp : float Js.undefined;
-     (**)
+     channelID : string;
+     author : User.t;
+     attachments : attachment array;
      (* TODO: is this JSON? *)
      embeds : Js.Json.t array;
-     flags : int;
-     id : string;
-     mentionedEveryone : bool;
      mentions : string array;
      roleMentions : string array;
-     timestamp : float;
+     mentionedEveryone : bool;
      tts : bool;
-     _type : int;
+     timestamp : float;
+     editedTimestamp : float Js.undefined;
+     flags : int;
      webhookID : string;
    }
 
@@ -281,25 +286,28 @@ module CommandContext = struct
   type role (* TODO: NYI *)
 
   type t = private {
-     channelID : string;
-     channels : channel Js.Dict.t;
-     commandID : string;
-     commandName : string;
      creator : SlashCreator.t;
-     (* TODO: NYI: data: *) expired : bool;
-     guildID : string Js.undefined;
-     initiallyResponded : bool;
-     interactionID : string;
+     (* TODO: NYI: data: *)
      interactionToken : string;
-     invokedAt : float;
+     interactionID : string;
+     channelID : string;
+     guildID : string Js.undefined;
      member : Member.unresolved;
-     members : Member.t Js.Dict.t;
-     options : Js.Json.t;
-     (* TODO: wtf? *)
-     roles : role Js.Dict.t;
-     subcommands : string array;
      user : User.t;
+     (* *)
+     commandName : string;
+     commandID : string;
+     options : Js.Json.t;
+     subcommands : string array;
+     invokedAt : float;
+     mutable initiallyResponded : bool;
+     (* *)
      users : User.t Js.Dict.t;
+     members : Member.t Js.Dict.t;
+     roles : role Js.Dict.t;
+     channels : channel Js.Dict.t;
+     (* *)
+     expired : bool;
    }
 
   external acknowledge : t -> ?includeSource:bool -> unit -> bool Js.Promise.t = ""
@@ -375,10 +383,10 @@ module SlashCommand = struct
            [@as "type"]
        name : string;
        description : string;
-       options : t array Js.undefined;
-       choices : choice array Js.undefined;
        default : bool Js.undefined;
        required : bool Js.undefined;
+       choices : choice array Js.undefined;
+       options : t array Js.undefined;
      }
   end
 
@@ -435,16 +443,15 @@ module SlashCommand = struct
   (* FIXME: This should be [private], but needs setters for the mutable handlers. *)
   type t = {
      commandName : string;
-     creator : SlashCreator.t;
      description : string;
-     guildIDs : string array;
      options : Option.t array;
+     guildIDs : string array;
      requiredPermissions : string array;
      throttling : throttlingParams;
      unknown : bool;
      mutable filePath : string Js.undefined;
-     (**)
-     (* Handlers *)
+     creator : SlashCreator.t;
+     (* *)
      mutable hasPermission : CommandContext.t -> permission;
      mutable onBlock : onBlockHandler;
      mutable onError : Js.Exn.t -> CommandContext.t -> unit;
@@ -461,7 +468,7 @@ module SlashCommand = struct
      [@@bs.inline]
 
 
-  let throttleParamsOfJson o =
+  let throttlingParamsOfJson o =
      let open Js in
      let get = Dict.get o in
      match (get "duration", get "usages") with
@@ -481,7 +488,7 @@ module SlashCommand = struct
          match (Json.classify throttleVal, Json.classify remainingVal) with
          | JSONObject throttleObj, JSONNumber remainingFl ->
              {
-               throttle = throttleParamsOfJson throttleObj;
+               throttle = throttlingParamsOfJson throttleObj;
                remaining = int_of_float remainingFl;
              }
          | _ -> failwith failmsg)
