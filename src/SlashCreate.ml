@@ -71,7 +71,7 @@ module BitField = struct
 end
 
 module UserFlags = struct
-  type t
+  type t = BitField.t
 
   let dISCORD_EMPLOYEE = 1
 
@@ -101,6 +101,8 @@ module UserFlags = struct
 end
 
 module Permissions = struct
+  type t = BitField.t
+
   let cREATE_INSTANT_INVITE = 1 lsl 0
 
   let kICK_MEMBERS = 1 lsl 1
@@ -350,17 +352,17 @@ end
 
 module SlashCommand = struct
   module Option = struct
-    type value
+    type fixedValue
 
-    external valueOfString : string -> value = "%identity"
+    external fixedValueOfString : string -> fixedValue = "%identity"
 
-    external valueOfFloat : float -> value = "%identity"
+    external fixedValueOfFloat : float -> fixedValue = "%identity"
 
-    external valueOfInt : int -> value = "%identity"
+    external fixedValueOfInt : int -> fixedValue = "%identity"
 
-    type choice = { name : string; value : value }
+    type choice = { name : string; value : fixedValue }
 
-    type t = {
+    type t = private {
        _type :
          ([ `sub_command
           | `sub_command_group
@@ -430,8 +432,8 @@ module SlashCommand = struct
 
   type onBlockHandler = CommandContext.t -> string -> Js.Json.t -> unit
 
-  type t = private {
-     (* Properties *)
+  (* FIXME: This should be [private], but needs setters for the mutable handlers. *)
+  type t = {
      commandName : string;
      creator : SlashCreator.t;
      description : string;
