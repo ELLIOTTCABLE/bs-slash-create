@@ -8,8 +8,12 @@
   },
   "author": "",
   "license": "ISC",
+  "peerDependencies": {
+    "slash-create": "=2.1.2"
+  },
   "devDependencies": {
     "bs-platform": "^9.0.1",
-    "bsdoc": "^6.0.4-alpha"
+    "bsdoc": "^6.0.4-alpha",
+    "slash-create": "=2.1.2"
   }
 }
