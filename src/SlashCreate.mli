@@ -37,101 +37,6 @@ external syncCommandParams :
 (** Constructs parameters for {!SlashCreator.syncCommandWith}; note that you probably want
     {!SlashCreator.syncCommands} instead. *)
 
-module SlashCreator : sig
-  type t
-  (** The main class for using commands and interactions. *)
-
-  type params
-
-  external params :
-    applicationID:string ->
-    ?publicKey:string ->
-    ?token:string ->
-    ?endpointPath:string ->
-    ?serverHost:string ->
-    ?serverPort:int ->
-    ?unknownCommandResponse:bool ->
-    ?autoAcknowledgeSource:bool ->
-    (* FIXME: NYI ?allowedMentions:??? -> *)
-    ?defaultImageFormat:imageFormat ->
-    ?defaultImageSize:int ->
-    ?latencyThreshold:int ->
-    ?ratelimiterOffset:int ->
-    ?requestTimeout:int ->
-    ?maxSignatureTimestamp:int ->
-    (* FIXME: NYI ?agent:??? -> *)
-    unit ->
-    params = ""
-    [@@bs.obj]
-  (** Constructs parameters for {!SlashCreator.createWith}.
-
-      @param applicationID Your application's ID
-      @param publicKey The public key for your application. Required for webservers.
-      @param token The bot/client token for the application. Recommended to set this in
-      your config.
-      @param endpointPath The path where the server will listen for interactions.
-      @param serverPort The port where the server will listen on.
-      @param serverHost The host where the server will listen on.
-      @param unknownCommandResponse Whether to respond to an unknown command with an
-      ephemeral message. If an unknown command is registered, this is ignored.
-      @param autoAcknowledgeSource Whether to include source in the auto-acknowledgement
-      timeout.
-      @param allowedMentions The default allowed mentions for all messages.
-      @param defaultImageFormat The default format to provide user avatars in.
-      @param defaultImageSize The default image size to provide user avatars in.
-      @param latencyThreshold The average latency where SlashCreate will start emitting
-      warnings for.
-      @param ratelimiterOffset A number of milliseconds to offset the ratelimit timing
-      calculations by.
-      @param requestTimeout A number of milliseconds before requests are considered timed
-      out.
-      @param maxSignatureTimestamp A number of milliseconds before requests with a
-      timestamp past that time get rejected.
-      @param agent A HTTP Agent used to proxy requests *)
-
-  external createWith : params -> t = "SlashCreator"
-    [@@bs.new] [@@bs.module "slash-create"]
-  (** Construct a {!SlashCreator.t}; accepts options constructed by {!val:params}. *)
-
-  external commandsPath : t -> string Js.undefined = ""
-    [@@bs.get]
-  (** The path where the commands were loaded from. See {!registerCommandsIn},
-      {!registerCommandsInPath}. *)
-
-  external registerCommandsInPath : string -> t = ""
-    [@@bs.send.pipe: t]
-  (** Registers all commands in a directory. The files must export a Command class
-      constructor or instance. This is a short form for {!registerCommandsIn}.
-
-      @param path The path to the directory
-
-      @see
-      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
-
-  external registerCommandsIn : requireAllParams -> t = ""
-    [@@bs.send.pipe: t]
-  (** Registers all commands in a directory. The files must export a Command class
-      constructor or instance. See {!registerCommandsInPath} for a shorter form.
-
-      @param requireAllParams Parameters constructed with {!val:requireAllParams}
-
-      @see
-      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
-
-  external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
-
-  val syncCommands :
-    ?deleteCommands:bool -> ?skipGuildErrors:bool -> ?syncGuilds:bool -> t -> t
-  (** Sync all commands with Discord. This ensures that commands exist when handling them.
-
-      This requires you to have your token set in the creator config.
-
-      @param deleteCommands Whether to delete commands that do not exist in the creator.
-      @param syncGuilds Whether to sync guild-specific commands.
-      @param skipGuildErrors Whether to skip over guild syncing errors. (Guild syncs most
-      likely can error if that guild no longer exists.) *)
-end
-
 module BitField : sig
   type t = { bitfield : int }
   (** Data structure that "makes it easy to interact with a bitfield."
@@ -371,6 +276,101 @@ module Message : sig
 
       @param self The message to edit
       @param options The message content, or a structure of message options *)
+end
+
+module SlashCreator : sig
+  type t
+  (** The main class for using commands and interactions. *)
+
+  type params
+
+  external params :
+    applicationID:string ->
+    ?publicKey:string ->
+    ?token:string ->
+    ?endpointPath:string ->
+    ?serverHost:string ->
+    ?serverPort:int ->
+    ?unknownCommandResponse:bool ->
+    ?autoAcknowledgeSource:bool ->
+    ?allowedMentions:Message.allowedMentions ->
+    ?defaultImageFormat:imageFormat ->
+    ?defaultImageSize:int ->
+    ?latencyThreshold:int ->
+    ?ratelimiterOffset:int ->
+    ?requestTimeout:int ->
+    ?maxSignatureTimestamp:int ->
+    (* FIXME: NYI ?agent:??? -> *)
+    unit ->
+    params = ""
+    [@@bs.obj]
+  (** Constructs parameters for {!SlashCreator.createWith}.
+
+      @param applicationID Your application's ID
+      @param publicKey The public key for your application. Required for webservers.
+      @param token The bot/client token for the application. Recommended to set this in
+      your config.
+      @param endpointPath The path where the server will listen for interactions.
+      @param serverPort The port where the server will listen on.
+      @param serverHost The host where the server will listen on.
+      @param unknownCommandResponse Whether to respond to an unknown command with an
+      ephemeral message. If an unknown command is registered, this is ignored.
+      @param autoAcknowledgeSource Whether to include source in the auto-acknowledgement
+      timeout.
+      @param allowedMentions The default allowed mentions for all messages.
+      @param defaultImageFormat The default format to provide user avatars in.
+      @param defaultImageSize The default image size to provide user avatars in.
+      @param latencyThreshold The average latency where SlashCreate will start emitting
+      warnings for.
+      @param ratelimiterOffset A number of milliseconds to offset the ratelimit timing
+      calculations by.
+      @param requestTimeout A number of milliseconds before requests are considered timed
+      out.
+      @param maxSignatureTimestamp A number of milliseconds before requests with a
+      timestamp past that time get rejected.
+      @param agent A HTTP Agent used to proxy requests *)
+
+  external createWith : params -> t = "SlashCreator"
+    [@@bs.new] [@@bs.module "slash-create"]
+  (** Construct a {!SlashCreator.t}; accepts options constructed by {!val:params}. *)
+
+  external commandsPath : t -> string Js.undefined = ""
+    [@@bs.get]
+  (** The path where the commands were loaded from. See {!registerCommandsIn},
+      {!registerCommandsInPath}. *)
+
+  external registerCommandsInPath : string -> t = ""
+    [@@bs.send.pipe: t]
+  (** Registers all commands in a directory. The files must export a Command class
+      constructor or instance. This is a short form for {!registerCommandsIn}.
+
+      @param path The path to the directory
+
+      @see
+      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
+
+  external registerCommandsIn : requireAllParams -> t = ""
+    [@@bs.send.pipe: t]
+  (** Registers all commands in a directory. The files must export a Command class
+      constructor or instance. See {!registerCommandsInPath} for a shorter form.
+
+      @param requireAllParams Parameters constructed with {!val:requireAllParams}
+
+      @see
+      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
+
+  external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
+
+  val syncCommands :
+    ?deleteCommands:bool -> ?skipGuildErrors:bool -> ?syncGuilds:bool -> t -> t
+  (** Sync all commands with Discord. This ensures that commands exist when handling them.
+
+      This requires you to have your token set in the creator config.
+
+      @param deleteCommands Whether to delete commands that do not exist in the creator.
+      @param syncGuilds Whether to sync guild-specific commands.
+      @param skipGuildErrors Whether to skip over guild syncing errors. (Guild syncs most
+      likely can error if that guild no longer exists.) *)
 end
 
 module CommandContext : sig

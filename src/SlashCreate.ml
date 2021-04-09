@@ -25,49 +25,6 @@ external syncCommandParams :
   syncCommandParams = ""
   [@@bs.obj]
 
-module SlashCreator = struct
-  type t
-
-  type params
-
-  external params :
-    applicationID:string ->
-    ?publicKey:string ->
-    ?token:string ->
-    ?endpointPath:string ->
-    ?serverHost:string ->
-    ?serverPort:int ->
-    ?unknownCommandResponse:bool ->
-    ?autoAcknowledgeSource:bool ->
-    (* FIXME: NYI ?allowedMentions:??? -> *)
-    ?defaultImageFormat:imageFormat ->
-    ?defaultImageSize:int ->
-    ?latencyThreshold:int ->
-    ?ratelimiterOffset:int ->
-    ?requestTimeout:int ->
-    ?maxSignatureTimestamp:int ->
-    (* FIXME: NYI ?agent:??? -> *)
-    unit ->
-    params = ""
-    [@@bs.obj]
-
-  external createWith : params -> t = "SlashCreator"
-    [@@bs.new] [@@bs.module "slash-create"]
-
-  external commandsPath : t -> string Js.undefined = "" [@@bs.get]
-
-  external registerCommandsInPath : string -> t = "" [@@bs.send.pipe: t]
-
-  external registerCommandsIn : requireAllParams -> t = "" [@@bs.send.pipe: t]
-
-  external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
-
-  let syncCommands ?deleteCommands ?skipGuildErrors ?syncGuilds creator =
-     syncCommandsWith
-       (syncCommandParams ?deleteCommands ?skipGuildErrors ?syncGuilds ())
-       creator
-end
-
 module BitField = struct
   type t = { bitfield : int }
 end
@@ -278,6 +235,49 @@ module Message = struct
     t -> ([ `Content of string | `Params of editParams ][@bs.unwrap]) -> t Js.Promise.t
     = ""
     [@@bs.send]
+end
+
+module SlashCreator = struct
+  type t
+
+  type params
+
+  external params :
+    applicationID:string ->
+    ?publicKey:string ->
+    ?token:string ->
+    ?endpointPath:string ->
+    ?serverHost:string ->
+    ?serverPort:int ->
+    ?unknownCommandResponse:bool ->
+    ?autoAcknowledgeSource:bool ->
+    ?allowedMentions:Message.allowedMentions ->
+    ?defaultImageFormat:imageFormat ->
+    ?defaultImageSize:int ->
+    ?latencyThreshold:int ->
+    ?ratelimiterOffset:int ->
+    ?requestTimeout:int ->
+    ?maxSignatureTimestamp:int ->
+    (* FIXME: NYI ?agent:??? -> *)
+    unit ->
+    params = ""
+    [@@bs.obj]
+
+  external createWith : params -> t = "SlashCreator"
+    [@@bs.new] [@@bs.module "slash-create"]
+
+  external commandsPath : t -> string Js.undefined = "" [@@bs.get]
+
+  external registerCommandsInPath : string -> t = "" [@@bs.send.pipe: t]
+
+  external registerCommandsIn : requireAllParams -> t = "" [@@bs.send.pipe: t]
+
+  external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
+
+  let syncCommands ?deleteCommands ?skipGuildErrors ?syncGuilds creator =
+     syncCommandsWith
+       (syncCommandParams ?deleteCommands ?skipGuildErrors ?syncGuilds ())
+       creator
 end
 
 module CommandContext = struct
