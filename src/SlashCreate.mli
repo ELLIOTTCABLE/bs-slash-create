@@ -34,7 +34,7 @@ external syncCommandParams :
   unit ->
   syncCommandParams = ""
   [@@bs.obj]
-(** Constructs parameters for {!SlashCreator.syncCommandWith}; note that you probably want
+(** Constructs parameters for {!SlashCreator.syncCommandsWith}; note that you probably want
     {!SlashCreator.syncCommands} instead. *)
 
 module BitField : sig
@@ -346,8 +346,7 @@ module SlashCreator : sig
 
       @param path The path to the directory
 
-      @see
-      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
+      @see <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
 
   external registerCommandsIn : requireAllParams -> t = ""
     [@@bs.send.pipe: t]
@@ -356,8 +355,7 @@ module SlashCreator : sig
 
       @param requireAllParams Parameters constructed with {!val:requireAllParams}
 
-      @see
-      <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
+      @see <https://slash-create.js.org/#/docs/main/latest/class/SlashCreator?scrollTo=registerCommandsIn> *)
 
   external syncCommandsWith : syncCommandParams -> t = "syncCommands" [@@bs.send.pipe: t]
 
