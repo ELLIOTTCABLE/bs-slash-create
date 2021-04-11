@@ -4,6 +4,8 @@
   "description": "ReScript / BuckleScript bindings to the slash-create library for Discord commands",
   "main": "index.js",
   "scripts": {
+    "build": "bsb -make-world",
+    "build:docs": "bsdoc build SlashCreate && bsdoc support-files",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
