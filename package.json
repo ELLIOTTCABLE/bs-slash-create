@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "bsb -make-world",
-    "build:docs": "bsdoc build SlashCreate && bsdoc support-files",
+    "build:docs": "bsdoc build SlashCreate && bsdoc support-files && prettier --write 'docs/**/*.html'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "bs-platform": "^9.0.1",
     "bsdoc": "^6.0.4-alpha",
+    "prettier": "^2.2.1",
     "slash-create": "=2.1.2"
   }
 }

@@ -1,2 +1,167 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Permissions (SlashCreate.SlashCreate.Permissions)</title><link rel="stylesheet" href="../../../odoc.css"/><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="content"><header><nav><a href="../">Up</a> – <a href="../../">SlashCreate</a> &#x00BB; <a href="../">SlashCreate</a> &#x00BB; Permissions</nav><h1>Module <code>SlashCreate.Permissions</code></h1></header><dl><dt class="spec type" id="type-t"><a href="#type-t" class="anchor"></a><code><span class="keyword">type</span> t</code><code> = <a href="../BitField#type-t">BitField.t</a></code>;</dt><dd><p>Data structure that makes it easy to interact with a <a href="../Member#type-t.permissions"><code>Member.t.permissions</code></a> bitfield.</p></dd></dl><dl><dt class="spec value" id="val-cREATE_INSTANT_INVITE"><a href="#val-cREATE_INSTANT_INVITE" class="anchor"></a><code><span class="keyword">let</span> cREATE_INSTANT_INVITE: int;</code></dt><dt class="spec value" id="val-kICK_MEMBERS"><a href="#val-kICK_MEMBERS" class="anchor"></a><code><span class="keyword">let</span> kICK_MEMBERS: int;</code></dt><dt class="spec value" id="val-bAN_MEMBERS"><a href="#val-bAN_MEMBERS" class="anchor"></a><code><span class="keyword">let</span> bAN_MEMBERS: int;</code></dt><dt class="spec value" id="val-aDMINISTRATOR"><a href="#val-aDMINISTRATOR" class="anchor"></a><code><span class="keyword">let</span> aDMINISTRATOR: int;</code></dt><dt class="spec value" id="val-mANAGE_CHANNELS"><a href="#val-mANAGE_CHANNELS" class="anchor"></a><code><span class="keyword">let</span> mANAGE_CHANNELS: int;</code></dt><dt class="spec value" id="val-mANAGE_GUILD"><a href="#val-mANAGE_GUILD" class="anchor"></a><code><span class="keyword">let</span> mANAGE_GUILD: int;</code></dt><dt class="spec value" id="val-aDD_REACTIONS"><a href="#val-aDD_REACTIONS" class="anchor"></a><code><span class="keyword">let</span> aDD_REACTIONS: int;</code></dt><dt class="spec value" id="val-vIEW_AUDIT_LOG"><a href="#val-vIEW_AUDIT_LOG" class="anchor"></a><code><span class="keyword">let</span> vIEW_AUDIT_LOG: int;</code></dt><dt class="spec value" id="val-pRIORITY_SPEAKER"><a href="#val-pRIORITY_SPEAKER" class="anchor"></a><code><span class="keyword">let</span> pRIORITY_SPEAKER: int;</code></dt><dt class="spec value" id="val-sTREAM"><a href="#val-sTREAM" class="anchor"></a><code><span class="keyword">let</span> sTREAM: int;</code></dt><dt class="spec value" id="val-vIEW_CHANNEL"><a href="#val-vIEW_CHANNEL" class="anchor"></a><code><span class="keyword">let</span> vIEW_CHANNEL: int;</code></dt><dt class="spec value" id="val-sEND_MESSAGES"><a href="#val-sEND_MESSAGES" class="anchor"></a><code><span class="keyword">let</span> sEND_MESSAGES: int;</code></dt><dt class="spec value" id="val-sEND_TTS_MESSAGES"><a href="#val-sEND_TTS_MESSAGES" class="anchor"></a><code><span class="keyword">let</span> sEND_TTS_MESSAGES: int;</code></dt><dt class="spec value" id="val-mANAGE_MESSAGES"><a href="#val-mANAGE_MESSAGES" class="anchor"></a><code><span class="keyword">let</span> mANAGE_MESSAGES: int;</code></dt><dt class="spec value" id="val-eMBED_LINKS"><a href="#val-eMBED_LINKS" class="anchor"></a><code><span class="keyword">let</span> eMBED_LINKS: int;</code></dt><dt class="spec value" id="val-aTTACH_FILES"><a href="#val-aTTACH_FILES" class="anchor"></a><code><span class="keyword">let</span> aTTACH_FILES: int;</code></dt><dt class="spec value" id="val-rEAD_MESSAGE_HISTORY"><a href="#val-rEAD_MESSAGE_HISTORY" class="anchor"></a><code><span class="keyword">let</span> rEAD_MESSAGE_HISTORY: int;</code></dt><dt class="spec value" id="val-mENTION_EVERYONE"><a href="#val-mENTION_EVERYONE" class="anchor"></a><code><span class="keyword">let</span> mENTION_EVERYONE: int;</code></dt><dt class="spec value" id="val-uSE_EXTERNAL_EMOJIS"><a href="#val-uSE_EXTERNAL_EMOJIS" class="anchor"></a><code><span class="keyword">let</span> uSE_EXTERNAL_EMOJIS: int;</code></dt><dt class="spec value" id="val-vIEW_GUILD_INSIGHTS"><a href="#val-vIEW_GUILD_INSIGHTS" class="anchor"></a><code><span class="keyword">let</span> vIEW_GUILD_INSIGHTS: int;</code></dt><dt class="spec value" id="val-cONNECT"><a href="#val-cONNECT" class="anchor"></a><code><span class="keyword">let</span> cONNECT: int;</code></dt><dt class="spec value" id="val-sPEAK"><a href="#val-sPEAK" class="anchor"></a><code><span class="keyword">let</span> sPEAK: int;</code></dt><dt class="spec value" id="val-mUTE_MEMBERS"><a href="#val-mUTE_MEMBERS" class="anchor"></a><code><span class="keyword">let</span> mUTE_MEMBERS: int;</code></dt><dt class="spec value" id="val-dEAFEN_MEMBERS"><a href="#val-dEAFEN_MEMBERS" class="anchor"></a><code><span class="keyword">let</span> dEAFEN_MEMBERS: int;</code></dt><dt class="spec value" id="val-mOVE_MEMBERS"><a href="#val-mOVE_MEMBERS" class="anchor"></a><code><span class="keyword">let</span> mOVE_MEMBERS: int;</code></dt><dt class="spec value" id="val-uSE_VAD"><a href="#val-uSE_VAD" class="anchor"></a><code><span class="keyword">let</span> uSE_VAD: int;</code></dt><dt class="spec value" id="val-cHANGE_NICKNAME"><a href="#val-cHANGE_NICKNAME" class="anchor"></a><code><span class="keyword">let</span> cHANGE_NICKNAME: int;</code></dt><dt class="spec value" id="val-mANAGE_NICKNAMES"><a href="#val-mANAGE_NICKNAMES" class="anchor"></a><code><span class="keyword">let</span> mANAGE_NICKNAMES: int;</code></dt><dt class="spec value" id="val-mANAGE_ROLES"><a href="#val-mANAGE_ROLES" class="anchor"></a><code><span class="keyword">let</span> mANAGE_ROLES: int;</code></dt><dt class="spec value" id="val-mANAGE_WEBHOOKS"><a href="#val-mANAGE_WEBHOOKS" class="anchor"></a><code><span class="keyword">let</span> mANAGE_WEBHOOKS: int;</code></dt><dt class="spec value" id="val-mANAGE_EMOJIS"><a href="#val-mANAGE_EMOJIS" class="anchor"></a><code><span class="keyword">let</span> mANAGE_EMOJIS: int;</code></dt></dl></div></body></html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Permissions (SlashCreate.SlashCreate.Permissions)</title>
+      <link rel="stylesheet" href="../../../odoc.css" />
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+      <script src="../../../highlight.pack.js"></script>
+      <script>
+         hljs.initHighlightingOnLoad()
+      </script>
+   </head>
+   <body>
+      <div class="content">
+         <header>
+            <nav>
+               <a href="../">Up</a> – <a href="../../">SlashCreate</a> &#x00BB;
+               <a href="../">SlashCreate</a> &#x00BB; Permissions
+            </nav>
+            <h1>Module <code>SlashCreate.Permissions</code></h1>
+         </header>
+         <dl>
+            <dt class="spec type" id="type-t">
+               <a href="#type-t" class="anchor"></a
+               ><code><span class="keyword">type</span> t</code
+               ><code> = <a href="../BitField#type-t">BitField.t</a></code
+               >;
+            </dt>
+            <dd>
+               <p>
+                  Data structure that makes it easy to interact with a
+                  <a href="../Member#type-t.permissions"
+                     ><code>Member.t.permissions</code></a
+                  >
+                  bitfield.
+               </p>
+            </dd>
+         </dl>
+         <dl>
+            <dt class="spec value" id="val-cREATE_INSTANT_INVITE">
+               <a href="#val-cREATE_INSTANT_INVITE" class="anchor"></a
+               ><code><span class="keyword">let</span> cREATE_INSTANT_INVITE: int;</code>
+            </dt>
+            <dt class="spec value" id="val-kICK_MEMBERS">
+               <a href="#val-kICK_MEMBERS" class="anchor"></a
+               ><code><span class="keyword">let</span> kICK_MEMBERS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-bAN_MEMBERS">
+               <a href="#val-bAN_MEMBERS" class="anchor"></a
+               ><code><span class="keyword">let</span> bAN_MEMBERS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-aDMINISTRATOR">
+               <a href="#val-aDMINISTRATOR" class="anchor"></a
+               ><code><span class="keyword">let</span> aDMINISTRATOR: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_CHANNELS">
+               <a href="#val-mANAGE_CHANNELS" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_CHANNELS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_GUILD">
+               <a href="#val-mANAGE_GUILD" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_GUILD: int;</code>
+            </dt>
+            <dt class="spec value" id="val-aDD_REACTIONS">
+               <a href="#val-aDD_REACTIONS" class="anchor"></a
+               ><code><span class="keyword">let</span> aDD_REACTIONS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-vIEW_AUDIT_LOG">
+               <a href="#val-vIEW_AUDIT_LOG" class="anchor"></a
+               ><code><span class="keyword">let</span> vIEW_AUDIT_LOG: int;</code>
+            </dt>
+            <dt class="spec value" id="val-pRIORITY_SPEAKER">
+               <a href="#val-pRIORITY_SPEAKER" class="anchor"></a
+               ><code><span class="keyword">let</span> pRIORITY_SPEAKER: int;</code>
+            </dt>
+            <dt class="spec value" id="val-sTREAM">
+               <a href="#val-sTREAM" class="anchor"></a
+               ><code><span class="keyword">let</span> sTREAM: int;</code>
+            </dt>
+            <dt class="spec value" id="val-vIEW_CHANNEL">
+               <a href="#val-vIEW_CHANNEL" class="anchor"></a
+               ><code><span class="keyword">let</span> vIEW_CHANNEL: int;</code>
+            </dt>
+            <dt class="spec value" id="val-sEND_MESSAGES">
+               <a href="#val-sEND_MESSAGES" class="anchor"></a
+               ><code><span class="keyword">let</span> sEND_MESSAGES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-sEND_TTS_MESSAGES">
+               <a href="#val-sEND_TTS_MESSAGES" class="anchor"></a
+               ><code><span class="keyword">let</span> sEND_TTS_MESSAGES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_MESSAGES">
+               <a href="#val-mANAGE_MESSAGES" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_MESSAGES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-eMBED_LINKS">
+               <a href="#val-eMBED_LINKS" class="anchor"></a
+               ><code><span class="keyword">let</span> eMBED_LINKS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-aTTACH_FILES">
+               <a href="#val-aTTACH_FILES" class="anchor"></a
+               ><code><span class="keyword">let</span> aTTACH_FILES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-rEAD_MESSAGE_HISTORY">
+               <a href="#val-rEAD_MESSAGE_HISTORY" class="anchor"></a
+               ><code><span class="keyword">let</span> rEAD_MESSAGE_HISTORY: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mENTION_EVERYONE">
+               <a href="#val-mENTION_EVERYONE" class="anchor"></a
+               ><code><span class="keyword">let</span> mENTION_EVERYONE: int;</code>
+            </dt>
+            <dt class="spec value" id="val-uSE_EXTERNAL_EMOJIS">
+               <a href="#val-uSE_EXTERNAL_EMOJIS" class="anchor"></a
+               ><code><span class="keyword">let</span> uSE_EXTERNAL_EMOJIS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-vIEW_GUILD_INSIGHTS">
+               <a href="#val-vIEW_GUILD_INSIGHTS" class="anchor"></a
+               ><code><span class="keyword">let</span> vIEW_GUILD_INSIGHTS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-cONNECT">
+               <a href="#val-cONNECT" class="anchor"></a
+               ><code><span class="keyword">let</span> cONNECT: int;</code>
+            </dt>
+            <dt class="spec value" id="val-sPEAK">
+               <a href="#val-sPEAK" class="anchor"></a
+               ><code><span class="keyword">let</span> sPEAK: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mUTE_MEMBERS">
+               <a href="#val-mUTE_MEMBERS" class="anchor"></a
+               ><code><span class="keyword">let</span> mUTE_MEMBERS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-dEAFEN_MEMBERS">
+               <a href="#val-dEAFEN_MEMBERS" class="anchor"></a
+               ><code><span class="keyword">let</span> dEAFEN_MEMBERS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mOVE_MEMBERS">
+               <a href="#val-mOVE_MEMBERS" class="anchor"></a
+               ><code><span class="keyword">let</span> mOVE_MEMBERS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-uSE_VAD">
+               <a href="#val-uSE_VAD" class="anchor"></a
+               ><code><span class="keyword">let</span> uSE_VAD: int;</code>
+            </dt>
+            <dt class="spec value" id="val-cHANGE_NICKNAME">
+               <a href="#val-cHANGE_NICKNAME" class="anchor"></a
+               ><code><span class="keyword">let</span> cHANGE_NICKNAME: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_NICKNAMES">
+               <a href="#val-mANAGE_NICKNAMES" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_NICKNAMES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_ROLES">
+               <a href="#val-mANAGE_ROLES" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_ROLES: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_WEBHOOKS">
+               <a href="#val-mANAGE_WEBHOOKS" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_WEBHOOKS: int;</code>
+            </dt>
+            <dt class="spec value" id="val-mANAGE_EMOJIS">
+               <a href="#val-mANAGE_EMOJIS" class="anchor"></a
+               ><code><span class="keyword">let</span> mANAGE_EMOJIS: int;</code>
+            </dt>
+         </dl>
+      </div>
+   </body>
+</html>

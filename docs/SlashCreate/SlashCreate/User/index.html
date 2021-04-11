@@ -1,2 +1,134 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>User (SlashCreate.SlashCreate.User)</title><link rel="stylesheet" href="../../../odoc.css"/><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><div class="content"><header><nav><a href="../">Up</a> – <a href="../../">SlashCreate</a> &#x00BB; <a href="../">SlashCreate</a> &#x00BB; User</nav><h1>Module <code>SlashCreate.User</code></h1></header><dl><dt class="spec type" id="type-t"><a href="#type-t" class="anchor"></a><code><span class="keyword">type</span> t</code><code> = <span class="keyword">pri</span> </code><code>{</code><table class="record"><tr id="type-t.id" class="anchored"><td class="def field"><a href="#type-t.id" class="anchor"></a><code>id: string,</code></td><td class="doc"><p>The user's ID.</p></td></tr><tr id="type-t.username" class="anchored"><td class="def field"><a href="#type-t.username" class="anchor"></a><code>username: string,</code></td><td class="doc"><p>The user's username.</p></td></tr><tr id="type-t.discriminator" class="anchored"><td class="def field"><a href="#type-t.discriminator" class="anchor"></a><code>discriminator: string,</code></td><td class="doc"><p>The user's discriminator.</p></td></tr><tr id="type-t.avatar" class="anchored"><td class="def field"><a href="#type-t.avatar" class="anchor"></a><code>avatar: Js.undefined(string),</code></td><td class="doc"><p>The user's avatar hash.</p></td></tr><tr id="type-t.bot" class="anchored"><td class="def field"><a href="#type-t.bot" class="anchor"></a><code>bot: bool,</code></td><td class="doc"><p>Whether the user is a bot.</p></td></tr><tr id="type-t.flags" class="anchored"><td class="def field"><a href="#type-t.flags" class="anchor"></a><code>flags: <a href="../UserFlags#type-t">UserFlags.t</a>,</code></td><td class="doc"><p>The public flags for the user.</p></td></tr><tr id="type-t.mention" class="anchored"><td class="def field"><a href="#type-t.mention" class="anchor"></a><code>mention: string,</code></td><td class="doc"><p>A string that mentions the user.</p></td></tr><tr id="type-t.defaultAvatar" class="anchored"><td class="def field"><a href="#type-t.defaultAvatar" class="anchor"></a><code>defaultAvatar: float,</code></td><td class="doc"><p>The hash for the default avatar of a user if there is no avatar set.</p></td></tr><tr id="type-t.defaultAvatarURL" class="anchored"><td class="def field"><a href="#type-t.defaultAvatarURL" class="anchor"></a><code>defaultAvatarURL: string,</code></td><td class="doc"><p>The URL of the user's default avatar.</p></td></tr><tr id="type-t.avatarURL" class="anchored"><td class="def field"><a href="#type-t.avatarURL" class="anchor"></a><code>avatarURL: string,</code></td><td class="doc"><p>The URL of the user's avatar.</p></td></tr></table><code>}</code>;</dt><dd><p>Represents a user on Discord.</p></dd></dl><dl><dt class="spec external" id="val-dynamicAvatarURL"><a href="#val-dynamicAvatarURL" class="anchor"></a><code><span class="keyword">let</span> dynamicAvatarURL: <span>?&#8288;format:<a href="..#type-imageFormat">imageFormat</a></span> <span>=&gt;</span> <span>?&#8288;size:int</span> <span>=&gt;</span> <a href="#type-t">t</a> <span>=&gt;</span> string;</code></dt><dd><p>Get the user's avatar with the given format and size.</p><dl><dt>parameter format</dt><dd><p>The format of the avatar</p></dd></dl><dl><dt>parameter size</dt><dd><p>The size of the avatar</p></dd></dl></dd></dl></div></body></html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>User (SlashCreate.SlashCreate.User)</title>
+      <link rel="stylesheet" href="../../../odoc.css" />
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+      <script src="../../../highlight.pack.js"></script>
+      <script>
+         hljs.initHighlightingOnLoad()
+      </script>
+   </head>
+   <body>
+      <div class="content">
+         <header>
+            <nav>
+               <a href="../">Up</a> – <a href="../../">SlashCreate</a> &#x00BB;
+               <a href="../">SlashCreate</a> &#x00BB; User
+            </nav>
+            <h1>Module <code>SlashCreate.User</code></h1>
+         </header>
+         <dl>
+            <dt class="spec type" id="type-t">
+               <a href="#type-t" class="anchor"></a
+               ><code><span class="keyword">type</span> t</code
+               ><code> = <span class="keyword">pri</span> </code><code>{</code>
+               <table class="record">
+                  <tr id="type-t.id" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.id" class="anchor"></a><code>id: string,</code>
+                     </td>
+                     <td class="doc"><p>The user's ID.</p></td>
+                  </tr>
+                  <tr id="type-t.username" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.username" class="anchor"></a
+                        ><code>username: string,</code>
+                     </td>
+                     <td class="doc"><p>The user's username.</p></td>
+                  </tr>
+                  <tr id="type-t.discriminator" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.discriminator" class="anchor"></a
+                        ><code>discriminator: string,</code>
+                     </td>
+                     <td class="doc"><p>The user's discriminator.</p></td>
+                  </tr>
+                  <tr id="type-t.avatar" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.avatar" class="anchor"></a
+                        ><code>avatar: Js.undefined(string),</code>
+                     </td>
+                     <td class="doc"><p>The user's avatar hash.</p></td>
+                  </tr>
+                  <tr id="type-t.bot" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.bot" class="anchor"></a><code>bot: bool,</code>
+                     </td>
+                     <td class="doc"><p>Whether the user is a bot.</p></td>
+                  </tr>
+                  <tr id="type-t.flags" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.flags" class="anchor"></a
+                        ><code
+                           >flags: <a href="../UserFlags#type-t">UserFlags.t</a>,</code
+                        >
+                     </td>
+                     <td class="doc"><p>The public flags for the user.</p></td>
+                  </tr>
+                  <tr id="type-t.mention" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.mention" class="anchor"></a
+                        ><code>mention: string,</code>
+                     </td>
+                     <td class="doc"><p>A string that mentions the user.</p></td>
+                  </tr>
+                  <tr id="type-t.defaultAvatar" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.defaultAvatar" class="anchor"></a
+                        ><code>defaultAvatar: float,</code>
+                     </td>
+                     <td class="doc">
+                        <p>
+                           The hash for the default avatar of a user if there is no avatar
+                           set.
+                        </p>
+                     </td>
+                  </tr>
+                  <tr id="type-t.defaultAvatarURL" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.defaultAvatarURL" class="anchor"></a
+                        ><code>defaultAvatarURL: string,</code>
+                     </td>
+                     <td class="doc"><p>The URL of the user's default avatar.</p></td>
+                  </tr>
+                  <tr id="type-t.avatarURL" class="anchored">
+                     <td class="def field">
+                        <a href="#type-t.avatarURL" class="anchor"></a
+                        ><code>avatarURL: string,</code>
+                     </td>
+                     <td class="doc"><p>The URL of the user's avatar.</p></td>
+                  </tr>
+               </table>
+               <code>}</code>;
+            </dt>
+            <dd><p>Represents a user on Discord.</p></dd>
+         </dl>
+         <dl>
+            <dt class="spec external" id="val-dynamicAvatarURL">
+               <a href="#val-dynamicAvatarURL" class="anchor"></a
+               ><code
+                  ><span class="keyword">let</span> dynamicAvatarURL:
+                  <span
+                     >?&#8288;format:<a href="..#type-imageFormat">imageFormat</a></span
+                  >
+                  <span>=&gt;</span> <span>?&#8288;size:int</span> <span>=&gt;</span>
+                  <a href="#type-t">t</a> <span>=&gt;</span> string;</code
+               >
+            </dt>
+            <dd>
+               <p>Get the user's avatar with the given format and size.</p>
+               <dl>
+                  <dt>parameter format</dt>
+                  <dd><p>The format of the avatar</p></dd>
+               </dl>
+               <dl>
+                  <dt>parameter size</dt>
+                  <dd><p>The size of the avatar</p></dd>
+               </dl>
+            </dd>
+         </dl>
+      </div>
+   </body>
+</html>
