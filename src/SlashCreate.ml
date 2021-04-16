@@ -1,4 +1,4 @@
-type imageFormat = [ `jpg | `jpeg | `png | `webp | `gif ]
+type imageFormat = [ `gif | `jpeg | `jpg | `png | `webp ]
 
 type requireAllParams
 
