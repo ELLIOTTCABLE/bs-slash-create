@@ -167,6 +167,32 @@ module Member = struct
    }
 end
 
+module Role = struct
+  type t = private {
+     id : string;
+     name : string;
+     position : int;
+     color : int;
+     hoist : bool;
+     managed : bool;
+     mentionable : bool;
+     (* *)
+     mention : string;
+     colorHex : string;
+     permissions : Permissions.t;
+   }
+end
+
+module Channel = struct
+  type t = private {
+     id : string;
+     name : string;
+     _type : int;
+     (* *)
+     mention : string;
+   }
+end
+
 module Message = struct
   (* TODO: NYI *)
   type attachment
@@ -281,10 +307,6 @@ module SlashCreator = struct
 end
 
 module CommandContext = struct
-  type channel (* TODO: NYI *)
-
-  type role (* TODO: NYI *)
-
   type t = private {
      creator : SlashCreator.t;
      (* TODO: NYI: data: *)
@@ -304,8 +326,8 @@ module CommandContext = struct
      (* *)
      users : User.t Js.Dict.t;
      members : Member.t Js.Dict.t;
-     roles : role Js.Dict.t;
-     channels : channel Js.Dict.t;
+     roles : Role.t Js.Dict.t;
+     channels : Channel.t Js.Dict.t;
      (* *)
      expired : bool;
    }

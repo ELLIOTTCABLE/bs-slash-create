@@ -34,8 +34,8 @@ external syncCommandParams :
   unit ->
   syncCommandParams = ""
   [@@bs.obj]
-(** Constructs parameters for {!SlashCreator.syncCommandsWith}; note that you probably want
-    {!SlashCreator.syncCommands} instead. *)
+(** Constructs parameters for {!SlashCreator.syncCommandsWith}; note that you probably
+    want {!SlashCreator.syncCommands} instead. *)
 
 module BitField : sig
   type t = { bitfield : int }
@@ -187,6 +187,35 @@ module Member : sig
      deaf : bool;  (** Whether the user is deafened in voice channels *)
      permissions : Permissions.t;  (** The permissions the member has. *)
    }
+end
+
+(* FORMAT MEEEEEEE *)
+module Role : sig
+  type t = private {
+     id : string;  (** The role's ID *)
+     name : string;  (** The role's name *)
+     position : int;  (** The role's position *)
+     color : int;  (** The role's color integer *)
+     hoist : bool;  (** Whether the role is being hoisted *)
+     managed : bool;  (** Whether the role is being managed by an application *)
+     mentionable : bool;  (** Whether the role is mentionable by everyone *)
+     (* *)
+     mention : string;  (** The string that mentions this role. *)
+     colorHex : string;  (** The role's color in hexadecimal, with a leading hashtag *)
+     permissions : Permissions.t;  (** The permissions the member has. *)
+   }
+  (** Represents a resolved role object. *)
+end
+
+module Channel : sig
+  type t = private {
+     id : string;  (** The channel's ID *)
+     name : string;  (** The channel's name *)
+     _type : int;  (** The channel's type *)
+     (* *)
+     mention : string;  (** The string that mentions this channel. *)
+   }
+  (** Represents a resolved channel object. *)
 end
 
 module Message : sig
@@ -372,10 +401,6 @@ module SlashCreator : sig
 end
 
 module CommandContext : sig
-  type channel
-
-  type role
-
   type t = private {
      creator : SlashCreator.t;  (** The creator of the command. *)
      interactionToken : string;  (** The interaction's token. *)
@@ -394,8 +419,8 @@ module CommandContext : sig
      (* *)
      users : User.t Js.Dict.t;  (** The resolved users of the interaction. *)
      members : Member.t Js.Dict.t;  (** The resolved members of the interaction. *)
-     roles : role Js.Dict.t;  (** The resolved roles of the interaction. *)
-     channels : channel Js.Dict.t;  (** The resolved channels of the interaction. *)
+     roles : Role.t Js.Dict.t;  (** The resolved roles of the interaction. *)
+     channels : Channel.t Js.Dict.t;  (** The resolved channels of the interaction. *)
      (* *)
      expired : bool;
          (** Whether the interaction has expired. Interactions last 15 minutes. *)
